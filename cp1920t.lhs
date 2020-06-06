@@ -117,7 +117,7 @@
 \\\hline
 a11111 & Nome1 (preencher)	
 \\
-a22222 & Maria José Borges Pires 
+a22222 & Nome2 (preencher)	
 \\
 a33333 & Nome3 (preencher)	
 \end{tabular}
@@ -816,6 +816,7 @@ Os diagramas podem ser produzidos recorrendo à \emph{package} \LaTeX\
 \subsection*{Problema 1}
 Função de representação de um dicionário:
 \begin{code}
+
 dic_imp :: [(String,[String])] -> Dict
 dic_imp = Term "" . map (bmap  id singl) . untar . discollect
 \end{code}
@@ -968,14 +969,24 @@ outras funções auxiliares que sejam necessárias.
 
 \subsection*{Problema 1}
 \begin{code}
+
+-------AUXS--------
+
+
 discollect :: (Ord b, Ord a) => [(b, [a])] -> [(b, a)]
-discollect = undefined
+discollect [] = []
+discollect (h:t) = (lstr h) ++ discollect t
+
+
+-------------------
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
 
 tar = cataExp g where
   g = undefined
+  -- g = either (id >< i1) (id >< i2)
+  --g = either b1 (b,[b2])
 
 dic_rd = undefined
 
