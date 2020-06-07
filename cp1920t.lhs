@@ -1027,7 +1027,7 @@ splay l t =  undefined
 \begin{code}
 extLTree :: Bdt a -> LTree a
 extLTree = cataBdt g where
-  g = undefined
+  g = either Leaf ( Fork . p2 )
 
 inBdt = either Dec Query
 
