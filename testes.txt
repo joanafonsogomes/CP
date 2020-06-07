@@ -1,0 +1,10 @@
+-- Exercicio 1
+
+-- Exercicio 2
+
+-- Exercicio 3
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_pres_tips
+
+-- Exercicio 4
+
+-- Exercicio 5

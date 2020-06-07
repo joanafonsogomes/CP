@@ -117,7 +117,7 @@
 \\\hline
 a11111 & Nome1 (preencher)	
 \\
-a22222 & Nome2 (preencher)	
+a86268 & Maria José Borges Pires (preencher)	
 \\
 a33333 & Nome3 (preencher)	
 \end{tabular}
@@ -967,17 +967,15 @@ propostos, de acordo com o "layout" que se fornece. Não podem ser
 alterados os nomes ou tipos das funções dadas, mas pode ser adicionado texto e/ou 
 outras funções auxiliares que sejam necessárias.
 
+%----------------- Problema 1 ------------------------%
 \subsection*{Problema 1}
 \begin{code}
 
 -------AUXS--------
 
-
 discollect :: (Ord b, Ord a) => [(b, [a])] -> [(b, a)]
 discollect [] = []
 discollect (h:t) = (lstr h) ++ discollect t
-
-
 -------------------
 
 dic_exp :: Dict -> [(String,[String])]
@@ -994,6 +992,9 @@ dic_in = undefined
 
 \end{code}
 
+
+
+%----------------- Problema 2 ------------------------%
 \subsection*{Problema 2}
 
 \begin{code}
@@ -1022,30 +1023,119 @@ splay l t =  undefined
   
 \end{code}
 
+
+
+
+%----------------- Problema 3 ------------------------%
 \subsection*{Problema 3}
+O objetivo da função |extLTree| é ?? utilizando um catamorfismo, de tal modo que |extLTree| = |cataBdt g|. 
 
 \begin{code}
 extLTree :: Bdt a -> LTree a
 extLTree = cataBdt g where
   g = either Leaf ( Fork . p2 )
+\end{code}
 
+%--------------------------------------
+Diagrama da função |extLTree|:
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |Bdt|
+           \ar[d]_-{|cataBdt g|}
+&
+    |Bdt2|
+           \ar[d]^{|recBdt (cataBdt g)|}
+           \ar[l]_-{|inBdt|}
+\\
+     |LTree|
+&
+     |Bdt3|
+           \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+\begin{code}
 inBdt = either Dec Query
 
 outBdt (Dec a) = Left a
 outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
- 
+\end{code}
+
+%--------------------------------------
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+     |Bdt|
+&
+     |Bdt|
+           \ar[l]^-{|inBdt|}
+}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+     |Bdt|
+           \ar[r]_-{|outBdt|}
+&
+     |Bdt|
+}\end{eqnarray*}
+%--------------------------------------
+
+\begin{code}
 baseBdt e f g = e -|- (f >< (g >< g)) 
 recBdt g = baseBdt id id g
 
 cataBdt g = g . (recBdt(cataBdt g)) . outBdt  
 
 anaBdt f = inBdt . (recBdt (anaBdt f)) . f
+\end{code}
+%--------------------------------------
+\begin{eqnarray}
+\xymatrix@@C=2cm{
+    |Bdt1|
+        \ar[d]_-{|Bdt2|}
+        \ar[r]^-{|g|}
+&
+    |Bdt2|
+           \ar[d]^{|recBdt (anaBdt g)|}
+\\
+     |bdt4|
+&
+     |Bdt3|
+           \ar[l]^-{|inBdt|}
+}
+\end{eqnarray}
+%--------------------------------------
 
+
+O objetivo da função navLTree é ???
+\begin{code}
 navLTree :: LTree a -> ([Bool] -> LTree a)
 navLTree = cataLTree g 
   where g = undefined
 \end{code}
 
+Diagrama da função |navLTree|:
+%--------------------------------------
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |Bdt|
+           \ar[d]_-{|cataBdt g|}
+&
+    |Bdt2|
+           \ar[d]^{|recBdt (cataBdt g)|}
+           \ar[l]_-{|inBdt|}
+\\
+     |LTree|
+&
+     |Bdt3|
+           \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+
+%----------------- Problema 4 ------------------------%
 \subsection*{Problema 4}
 
 \begin{code}
@@ -1058,6 +1148,10 @@ pbnavLTree = cataLTree g
 
 \end{code}
 
+
+
+
+%----------------- Problema 5 ------------------------%
 \subsection*{Problema 5}
 
 \begin{code}
