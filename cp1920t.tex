@@ -304,7 +304,7 @@
 \\\hline
 a11111 & Nome1 (preencher)	
 \\
-a22222 & Maria José Borges Pires 
+a86268 & Maria José Borges Pires (preencher)	
 \\
 a33333 & Nome3 (preencher)	
 \end{tabular}
@@ -1368,14 +1368,21 @@ propostos, de acordo com o "layout" que se fornece. Não podem ser
 alterados os nomes ou tipos das funções dadas, mas pode ser adicionado texto e/ou 
 outras funções auxiliares que sejam necessárias.
 
+%----------------- Problema 1 ------------------------%
 \subsection*{Problema 1}
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mbox{\onelinecomment AUXS--------}{}\<[E]%
+\\[\blanklineskip]%
 \>[B]{}\Varid{discollect}\mathbin{::}(\Conid{Ord}\;\Varid{b},\Conid{Ord}\;\Varid{a})\Rightarrow [\mskip1.5mu (\Varid{b},[\mskip1.5mu \Varid{a}\mskip1.5mu])\mskip1.5mu]\to [\mskip1.5mu (\Varid{b},\Varid{a})\mskip1.5mu]{}\<[E]%
 \\
-\>[B]{}\Varid{discollect}\mathrel{=}\bot {}\<[E]%
+\>[B]{}\Varid{discollect}\;[\mskip1.5mu \mskip1.5mu]\mathrel{=}[\mskip1.5mu \mskip1.5mu]{}\<[E]%
+\\
+\>[B]{}\Varid{discollect}\;(\Varid{h}\mathbin{:}\Varid{t})\mathrel{=}(\Varid{lstr}\;\Varid{h})\plus \Varid{discollect}\;\Varid{t}{}\<[E]%
+\\
+\>[B]{}\mbox{\onelinecomment }{}\<[E]%
 \\[\blanklineskip]%
 \>[B]{}\Varid{dic\char95 exp}\mathbin{::}\Conid{Dict}\to [\mskip1.5mu (\Conid{String},[\mskip1.5mu \Conid{String}\mskip1.5mu])\mskip1.5mu]{}\<[E]%
 \\
@@ -1385,6 +1392,12 @@ outras funções auxiliares que sejam necessárias.
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{g}\mathrel{=}\bot {}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mbox{\onelinecomment g = either (id >< i1) (id >< i2)}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mbox{\onelinecomment g = either b1 (b,[b2])}{}\<[E]%
 \\[\blanklineskip]%
 \>[B]{}\Varid{dic\char95 rd}\mathrel{=}\bot {}\<[E]%
 \\[\blanklineskip]%
@@ -1392,6 +1405,9 @@ outras funções auxiliares que sejam necessárias.
 \ColumnHook
 \end{hscode}\resethooks
 
+
+
+%----------------- Problema 2 ------------------------%
 \subsection*{Problema 2}
 
 \begin{hscode}\SaveRestoreHook
@@ -1432,7 +1448,12 @@ outras funções auxiliares que sejam necessárias.
 \ColumnHook
 \end{hscode}\resethooks
 
+
+
+
+%----------------- Problema 3 ------------------------%
 \subsection*{Problema 3}
+O objetivo da função \ensuremath{\Varid{extLTree}} é ?? utilizando um catamorfismo, de tal modo que \ensuremath{\Varid{extLTree}} = \ensuremath{\Varid{cataBdt}\;\Varid{g}}. 
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -1444,19 +1465,94 @@ outras funções auxiliares que sejam necessárias.
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{g}\mathrel{=}\bot {}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\Varid{inBdt}\mathrel{=}\bot {}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\Varid{outBdt}\mathrel{=}\bot {}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\Varid{baseBdt}\mathrel{=}\bot {}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+%--------------------------------------
+Diagrama da função \ensuremath{\Varid{extLTree}}:
+\begin{eqnarray*}
+\xymatrix@C=2cm{
+    \ensuremath{\Conid{Bdt}}
+           \ar[d]_-{\ensuremath{\Varid{cataBdt}\;\Varid{g}}}
+&
+    \ensuremath{\Conid{Bdt2}}
+           \ar[d]^{\ensuremath{\Varid{recBdt}\;(\Varid{cataBdt}\;\Varid{g})}}
+           \ar[l]_-{\ensuremath{\Varid{inBdt}}}
 \\
-\>[B]{}\Varid{recBdt}\mathrel{=}\bot {}\<[E]%
+     \ensuremath{\mathsf{LTree}}
+&
+     \ensuremath{\Conid{Bdt3}}
+           \ar[l]^-{\ensuremath{\Varid{g}}}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{inBdt}\mathrel{=}\alt{\Conid{Dec}}{\Conid{Query}}{}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\Varid{cataBdt}\mathrel{=}\bot {}\<[E]%
+\>[B]{}\Varid{outBdt}\;(\Conid{Dec}\;\Varid{a})\mathrel{=}i_1\;\Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{outBdt}\;(\Conid{Query}\;(\Varid{a},(\Varid{t1},\Varid{t2})))\mathrel{=}i_2\;(\Varid{a},(\Varid{t1},\Varid{t2})){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
+%--------------------------------------
+\begin{eqnarray*}
+\xymatrix@C=2cm{
+     \ensuremath{\Conid{Bdt}}
+&
+     \ensuremath{\Conid{Bdt}}
+           \ar[l]^-{\ensuremath{\Varid{inBdt}}}
+}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\xymatrix@C=2cm{
+     \ensuremath{\Conid{Bdt}}
+           \ar[r]_-{\ensuremath{\Varid{outBdt}}}
+&
+     \ensuremath{\Conid{Bdt}}
+}
+%--------------------------------------
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{baseBdt}\;\Varid{e}\;\Varid{f}\;\Varid{g}\mathrel{=}\Varid{e}+(\Varid{f}\times(\Varid{g}\times\Varid{g})){}\<[E]%
+\\
+\>[B]{}\Varid{recBdt}\;\Varid{g}\mathrel{=}\Varid{baseBdt}\;\Varid{id}\;\Varid{id}\;\Varid{g}{}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\Varid{anaBdt}\mathrel{=}\bot {}\<[E]%
+\>[B]{}\Varid{cataBdt}\;\Varid{g}\mathrel{=}\Varid{g}\comp (\Varid{recBdt}\;(\Varid{cataBdt}\;\Varid{g}))\comp \Varid{outBdt}{}\<[E]%
 \\[\blanklineskip]%
+\>[B]{}\Varid{anaBdt}\;\Varid{f}\mathrel{=}\Varid{inBdt}\comp (\Varid{recBdt}\;(\Varid{anaBdt}\;\Varid{f}))\comp \Varid{f}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+%--------------------------------------
+\begin{eqnarray}
+\xymatrix@C=2cm{
+    \ensuremath{\Conid{Bdt1}}
+        \ar[d]_-{\ensuremath{\Conid{Bdt2}}}
+        \ar[r]^-{\ensuremath{\Varid{g}}}
+&
+    \ensuremath{\Conid{Bdt2}}
+           \ar[d]^{\ensuremath{\Varid{recBdt}\;(\Varid{anaBdt}\;\Varid{g})}}
+\\
+     \ensuremath{\Varid{bdt4}}
+&
+     \ensuremath{\Conid{Bdt3}}
+           \ar[l]^-{\ensuremath{\Varid{inBdt}}}
+}
+\end{eqnarray}
+%--------------------------------------
+
+
+O objetivo da função navLTree é ???
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Varid{navLTree}\mathbin{::}\mathsf{LTree}\;\Varid{a}\to ([\mskip1.5mu \Conid{Bool}\mskip1.5mu]\to \mathsf{LTree}\;\Varid{a}){}\<[E]%
 \\
 \>[B]{}\Varid{navLTree}\mathrel{=}\Varid{cataLTree}\;\Varid{g}{}\<[E]%
@@ -1466,7 +1562,27 @@ outras funções auxiliares que sejam necessárias.
 \ColumnHook
 \end{hscode}\resethooks
 
+Diagrama da função \ensuremath{\Varid{navLTree}}:
+%--------------------------------------
+\begin{eqnarray*}
+\xymatrix@C=2cm{
+    \ensuremath{\Conid{Bdt}}
+           \ar[d]_-{\ensuremath{\Varid{cataBdt}\;\Varid{g}}}
+&
+    \ensuremath{\Conid{Bdt2}}
+           \ar[d]^{\ensuremath{\Varid{recBdt}\;(\Varid{cataBdt}\;\Varid{g})}}
+           \ar[l]_-{\ensuremath{\Varid{inBdt}}}
+\\
+     \ensuremath{\mathsf{LTree}}
+&
+     \ensuremath{\Conid{Bdt3}}
+           \ar[l]^-{\ensuremath{\Varid{g}}}
+}
+\end{eqnarray*}
+%--------------------------------------
 
+
+%----------------- Problema 4 ------------------------%
 \subsection*{Problema 4}
 
 \begin{hscode}\SaveRestoreHook
@@ -1485,6 +1601,10 @@ outras funções auxiliares que sejam necessárias.
 \ColumnHook
 \end{hscode}\resethooks
 
+
+
+
+%----------------- Problema 5 ------------------------%
 \subsection*{Problema 5}
 
 \begin{hscode}\SaveRestoreHook
