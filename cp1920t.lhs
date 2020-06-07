@@ -985,7 +985,7 @@ dic_exp = collect . tar
 
 tar = cataExp g where
   g = undefined
-  -- g = either (id >< i1) (id >< i2)
+  --g = either (id >< i1) (id >< i2)
   --g = either b1 (b,[b2])
 
 dic_rd = undefined
@@ -1029,22 +1029,23 @@ extLTree :: Bdt a -> LTree a
 extLTree = cataBdt g where
   g = undefined
 
-inBdt = undefined
+inBdt = either Dec Query
 
-outBdt = undefined
+outBdt (Dec a) = Left a
+outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
+ 
+baseBdt e f g = e -|- (f >< (g >< g)) 
+recBdt g = baseBdt id g
 
-baseBdt = undefined
-recBdt = undefined
-
+--cataBdt g = g . (recBdt(cataBdt g)) . outBdt  
 cataBdt = undefined
 
-anaBdt = undefined
+--anaBdt g = g . (recBdt (cataBdt g)) . outBdt
 
 navLTree :: LTree a -> ([Bool] -> LTree a)
 navLTree = cataLTree g 
   where g = undefined
 \end{code}
-
 
 \subsection*{Problema 4}
 
