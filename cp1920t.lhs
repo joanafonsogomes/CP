@@ -1035,12 +1035,11 @@ outBdt (Dec a) = Left a
 outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
  
 baseBdt e f g = e -|- (f >< (g >< g)) 
-recBdt g = baseBdt id g
+recBdt g = baseBdt id id g
 
---cataBdt g = g . (recBdt(cataBdt g)) . outBdt  
-cataBdt = undefined
+cataBdt g = g . (recBdt(cataBdt g)) . outBdt  
 
---anaBdt g = g . (recBdt (cataBdt g)) . outBdt
+anaBdt f = inBdt . (recBdt (anaBdt f)) . f
 
 navLTree :: LTree a -> ([Bool] -> LTree a)
 navLTree = cataLTree g 
