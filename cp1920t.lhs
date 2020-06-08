@@ -969,14 +969,11 @@ outras funções auxiliares que sejam necessárias.
 
 %----------------- Problema 1 ------------------------%
 \subsection*{Problema 1}
+
 \begin{code}
-
--------AUXS--------
-
 discollect :: (Ord b, Ord a) => [(b, [a])] -> [(b, a)]
 discollect [] = []
 discollect (h:t) = (lstr h) ++ discollect t
--------------------
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
@@ -986,10 +983,31 @@ tar = cataExp g where
   --g = either (id >< i1) (id >< i2)
   --g = either b1 (b,[b2])
 
+\end{code}
+
+%--------------------------------------
+Diagrama da função |tar|:
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |?1|
+           \ar[d]_-{|cataExp g|}
+&
+    |?2|
+           \ar[d]^{|recExp (cataExp g)|}
+           \ar[l]_-{|inExp|}
+\\
+     |[(a,b)]|
+&
+     |?3|
+           \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+
+\begin{code}
 dic_rd = undefined
-
 dic_in = undefined
-
 \end{code}
 
 
@@ -1028,7 +1046,7 @@ splay l t =  undefined
 
 %----------------- Problema 3 ------------------------%
 \subsection*{Problema 3}
-O objetivo da função |extLTree| é ?? utilizando um catamorfismo, de tal modo que |extLTree| = |cataBdt g|. 
+O objetivo da função |extLTree| é transformar uma |Bdtree| numa |Ltree| utilizando um catamorfismo, de tal modo que |extLTree| = |cataBdt g|. 
 
 \begin{code}
 extLTree :: Bdt a -> LTree a
@@ -1090,25 +1108,11 @@ cataBdt g = g . (recBdt(cataBdt g)) . outBdt
 anaBdt f = inBdt . (recBdt (anaBdt f)) . f
 \end{code}
 %--------------------------------------
-\begin{eqnarray}
-\xymatrix@@C=2cm{
-    |Bdt1|
-        \ar[d]_-{|Bdt2|}
-        \ar[r]^-{|g|}
-&
-    |Bdt2|
-           \ar[d]^{|recBdt (anaBdt g)|}
-\\
-     |bdt4|
-&
-     |Bdt3|
-           \ar[l]^-{|inBdt|}
-}
-\end{eqnarray}
+Diagrama de |anaBdt|:
+DEFINAM-ME 
 %--------------------------------------
 
-
-O objetivo da função navLTree é ???
+O objetivo da função navLTree é navegar por uma àrvore, sendo a escolha do nodo seguinte efetuada através do próximo elemento da lista de boleanos dada, obtendo, no final, a àrvore de decisões ainda não tomadas.
 \begin{code}
 navLTree :: LTree a -> ([Bool] -> LTree a)
 navLTree = cataLTree g 
@@ -1120,11 +1124,11 @@ Diagrama da função |navLTree|:
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
     |Bdt|
-           \ar[d]_-{|cataBdt g|}
+           \ar[d]_-{|cataLtree g|}
 &
     |Bdt2|
-           \ar[d]^{|recBdt (cataBdt g)|}
-           \ar[l]_-{|inBdt|}
+           \ar[d]^{|recLtree (cataLtree g)|}
+           \ar[l]_-{|inLtree|}
 \\
      |LTree|
 &
@@ -1166,6 +1170,8 @@ janela = InWindow
              "Truchet"        -- window title
              (800, 800)       -- window size
              (100,100)        -- window position
+
+
 
 ----- defs auxiliares -------------
 
