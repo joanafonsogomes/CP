@@ -979,7 +979,7 @@ dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
 
 tar = cataExp g where
-  g = undefined
+  g = either ((  ) ++ p2) id
   --g = either (id >< i1) (id >< i2)
   --g = either b1 (b,[b2])
 
