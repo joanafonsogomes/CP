@@ -977,16 +977,11 @@ discollect (h:t) = (lstr h) ++ discollect t
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
-
-tar = cataExp g where
-  g = undefined
-  --g = either (id >< i1) (id >< i2)
-  --g = either b1 (b,[b2])
-
 \end{code}
 
+
+Definimos a função tar como um catamorfismo cujo gene é geneeeee, como se pode observar no seguinte diagarama.
 %--------------------------------------
-Diagrama da função |tar|:
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
     |?1|
@@ -1004,11 +999,46 @@ Diagrama da função |tar|:
 \end{eqnarray*}
 %--------------------------------------
 
+\begin{code}
+tar = cataExp g where
+  g = concat . (map auxTar)
+    where auxTar :: (String) -> [(String b, String b)]
+          auxTar () =
+          auxTar () = 
+          auxTar () = 
+\end{code}
 
 \begin{code}
 dic_rd = undefined
 dic_in = undefined
 \end{code}
+
+
+%--------------------------------------
+\xymatrix@@C=3cm{
+    |?1|
+           \ar[d]_-{|ana |}
+            \ar[r]^-{|??1|}
+&
+    |?2|
+           \ar[d]^{|??2|}
+\\
+     |?3|
+        \ar[d]_-{|??3|}
+        \ar[r]^-{|out|}
+&
+     |?4|
+           \ar[l]^-{|in|}
+            \ar[d]^{|??4|}
+\\
+    |?5|
+&
+    |?6|
+        \ar[l]^-{|in|}
+}
+%--------------------------------------
+
+
 
 
 
@@ -1040,6 +1070,10 @@ lrot = undefined
 splay l t =  undefined
   
 \end{code}
+
+
+
+
 
 
 
@@ -1085,7 +1119,7 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
 \xymatrix@@C=2cm{
      |Bdt|
 &
-     |Bdt|
+     |A+B><(C><Bdt><Bdt)|
            \ar[l]^-{|inBdt|}
 }
 \end{eqnarray*}
@@ -1095,7 +1129,7 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
      |Bdt|
            \ar[r]_-{|outBdt|}
 &
-     |Bdt|
+     |A+B><(C><Bdt><Bdt)|
 }\end{eqnarray*}
 %--------------------------------------
 
@@ -1108,8 +1142,22 @@ cataBdt g = g . (recBdt(cataBdt g)) . outBdt
 anaBdt f = inBdt . (recBdt (anaBdt f)) . f
 \end{code}
 %--------------------------------------
+
 Diagrama de |anaBdt|:
-DEFINAM-ME 
+
+\xymatrix@@C=3cm{
+    |Bdt|
+             \ar[r]^-{|outBdt|}
+&
+    |A+B><(C><Bdt><Bdt)|
+\\
+     |Bdt|
+            \ar[u]^-{|anaBdt g|}
+            \ar[r]_-{|f|}
+&
+     |?2|
+            \ar[u]_{|recBdt (anaBdt f)|}
+}
 %--------------------------------------
 
 O objetivo da função navLTree é navegar por uma àrvore, sendo a escolha do nodo seguinte efetuada através do próximo elemento da lista de boleanos dada, obtendo, no final, a àrvore de decisões ainda não tomadas.
@@ -1122,8 +1170,10 @@ navLTree = cataLTree g
               trash (lt1, lt2) (False:t) = lt2 t
 \end{code}
 
-Diagrama da função |navLTree|:
+
 %--------------------------------------
+Diagrama da função |navLTree|:
+
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
     |Bdt|
@@ -1142,6 +1192,15 @@ Diagrama da função |navLTree|:
 %--------------------------------------
 
 
+
+
+
+
+
+
+
+
+
 %----------------- Problema 4 ------------------------%
 \subsection*{Problema 4}
 
@@ -1153,6 +1212,16 @@ pbnavLTree = cataLTree g
   where g = undefined 
 
 \end{code}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1178,6 +1247,8 @@ janela = InWindow
 ----- defs auxiliares -------------
 
 put  = uncurry Translate 
+
+
 
 -------------------------------------------------
 \end{code}
