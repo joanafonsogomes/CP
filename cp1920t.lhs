@@ -977,6 +977,15 @@ discollect (h:t) = (lstr h) ++ discollect t
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
+<<<<<<< HEAD
+=======
+
+tar = cataExp g where
+  g = either ((  ) ++ p2) id
+  --g = either (id >< i1) (id >< i2)
+  --g = either b1 (b,[b2])
+
+>>>>>>> 19cf98f81fdc605ea943033fe8d4348ffe349092
 \end{code}
 
 

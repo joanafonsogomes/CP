@@ -4,6 +4,7 @@
 
 -- Exercicio 3
 quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_pres_tips
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_af
 
 -- Exercicio 4
 
