@@ -1115,8 +1115,11 @@ DEFINAM-ME
 O objetivo da função navLTree é navegar por uma àrvore, sendo a escolha do nodo seguinte efetuada através do próximo elemento da lista de boleanos dada, obtendo, no final, a àrvore de decisões ainda não tomadas.
 \begin{code}
 navLTree :: LTree a -> ([Bool] -> LTree a)
-navLTree = cataLTree g 
-  where g = undefined
+navLTree = cataLTree g
+    where g = either (\a _ -> Leaf a) trash where
+              trash (lt1, lt2) []  = Fork (lt1 [] , lt2 [])
+              trash (lt1, lt2) (True:t)  = lt1 t
+              trash (lt1, lt2) (False:t) = lt2 t
 \end{code}
 
 Diagrama da função |navLTree|:
@@ -1145,7 +1148,6 @@ Diagrama da função |navLTree|:
 \begin{code}
 bnavLTree = cataLTree g
   where g = undefined
-
 
 pbnavLTree = cataLTree g
   where g = undefined 
