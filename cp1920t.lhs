@@ -979,9 +979,26 @@ dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
 
 tar = cataExp g where
-  g = either ((  ) ++ p2) id
+  g = either  (aux)  (concat . (uncurry (aux')) )  where
+      aux :: String -> [(String,String)]
+      aux a = [(a,a)]
+
+      aux' :: String -> [[(String, String)]] -> [[(String,String)]]
+      aux' o [] = [[(o,"\"\"")]] 
+      aux' o ([(v1, v2)]:t) = if v1 == v2 then ([(o,v2)]:t)
+                              else ([(o++v1,v2)]:t)
+
+
+
   --g = either (id >< i1) (id >< i2)
   --g = either b1 (b,[b2])
+
+--tar = cataExp g where
+--    g = concat . (map auxTar)
+--      where auxTar :: (Exp String String) -> [(String b, String b)]
+--            auxTar () 
+--            auxTar ()
+--            auxTar ()
 
 \end{code}
 
