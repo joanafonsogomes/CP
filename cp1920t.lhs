@@ -113,13 +113,15 @@
 
 \begin{center}\large
 \begin{tabular}{ll}
-\textbf{Grupo} nr. & 99 (preencher)
+\textbf{Grupo} nr. 11 
 \\\hline
-a11111 & Nome1 (preencher)	
+a84584  & Alexandra Reigada  	
 \\
-a86268 & Maria José Borges Pires (preencher)	
+a84912 & Joana Gomes 
 \\
-a33333 & Nome3 (preencher)	
+a86268 & Maria José Pires 
+\\
+a85242 & Maria Miguel Regueiras 
 \end{tabular}
 \end{center}
 
@@ -560,7 +562,7 @@ elementos de |[Bool]| representam sequências de respostas: o valor |True| corre
 
 Seguem
 alguns exemplos dos resultados que se esperam ao aplicar |navLTree| a
-|(extLTree bdtGC)|, em que |bdtGC| é a  àrvore de decisão binária acima descrita,
+|(extLTree bdtGC)|, em que |bdtGC| é a  árvore de decisão binária acima descrita,
 e a uma
 sequência de respostas.
    \begin{Verbatim}[fontsize=\small]
@@ -977,7 +979,6 @@ discollect (h:t) = (lstr h) ++ discollect t
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
-
 \end{code}
 
 
@@ -1002,29 +1003,13 @@ Definimos a função tar como um catamorfismo cujo gene é geneeeee, como se pod
 
 \begin{code}
 tar = cataExp g where
-  g = either  (aux)  (concat . (uncurry (aux')) )  where
-      aux :: String -> [(String,String)]
-      aux a = [(a,a)]
-
-      aux' :: String -> [[(String, String)]] -> [[(String,String)]]
-      aux' o [] = [[(o,"\"\"")]] 
-      aux' o ([(v1, v2)]:t) = if v1 == v2 then ([(o,v2)]:t)
-                              else ([(o++v1,v2)]:t)
-
-
-
-  --g = either (id >< i1) (id >< i2)
-  --g = either b1 (b,[b2])
-
---tar = cataExp g where
---    g = concat . (map auxTar)
---      where auxTar :: (Exp String String) -> [(String b, String b)]
---            auxTar () 
---            auxTar ()
---            auxTar ()
-
+  g = undefined
+  --g = concat . (map auxTar)
+   -- where auxTar :: (String) -> [(String b, String b)]
+    --      auxTar () =
+     --     auxTar () = 
+     --     auxTar () = 
 \end{code}
-
 
 \begin{code}
 dic_rd = undefined
@@ -1064,23 +1049,67 @@ dic_in = undefined
 \subsection*{Problema 2}
 
 \begin{code}
+
 maisDir = cataBTree g
-  where g = undefined
-
+  where g = either (const Nothing) dirAux where
+            dirAux (a,(Nothing,Nothing)) = Just a
+            dirAux (a,(Nothing,Just t2)) = Just t2
+            dirAux (a,(Just t1,Nothing)) = Just a
+            dirAux (a,(Just t1, Just t2)) = Just t2
+  
 maisEsq = cataBTree g
-  where g = undefined
+  where g =  either (const Nothing) esqAux where
+             esqAux (a,(Nothing,Nothing)) = Just a
+             esqAux (a,(Nothing,Just t2)) = Just a
+             esqAux (a,(Just t1,Nothing)) = Just t1
+             esqAux (a,(Just t1, Just t2)) = Just t1
+\end{code}
 
+%--------------------------------------
+Diagrama da função |maisEsq|:
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |BTree A|
+           \ar[d]_-{|cataBdt g|}
+&
+    |? + (A >< BTree A >< BTree A)|
+           \ar[d]^{|recBdt (cataBdt g)|}
+           \ar[l]_-{|inBdt|}
+\\
+     |Maybe A|
+&
+     |??|
+           \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+
+\begin{code}
 insOrd' x = cataBTree g 
   where g = undefined
 
 insOrd a x = undefined
 
 isOrd' = cataBTree g
-  where g = undefined
+  where g =  undefined
+  --either (const true) isOrd'' where
+            --isOrd'' = undefined
+            --isOrd'' (Node(a,(Empty,Empty))) = (true,a)
+            --isOrd'' (Node(a,(Node(b,(_,_)))),_) = if a > b then true else false
+            --isOrd'' (Node(a,(Empty,(Node(b,(_,_)))),_) = if a < b then true else false
+            --isOrd'' (Node(a,((Node(b,(_,_))),(Node(c,(_,_)))),_) = if a > b && a < c then true else false
 
 isOrd = undefined
+\end{code} 
 
 
+
+
+
+
+
+\begin{code}
 rrot = undefined
 
 lrot = undefined
@@ -1110,14 +1139,14 @@ extLTree = cataBdt g where
 Diagrama da função |extLTree|:
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |Bdt|
+    |Bdt A|
            \ar[d]_-{|cataBdt g|}
 &
-    |Bdt2|
+    |A+(B><Bdt><Bdt)|
            \ar[d]^{|recBdt (cataBdt g)|}
            \ar[l]_-{|inBdt|}
 \\
-     |LTree|
+     |LTree A|
 &
      |Bdt3|
            \ar[l]^-{|g|}
@@ -1135,19 +1164,19 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
 %--------------------------------------
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-     |Bdt|
+     |Bdt A|
 &
-     |A+B><(C><Bdt><Bdt)|
+     |A+(B><Bdt><Bdt)|
            \ar[l]^-{|inBdt|}
 }
 \end{eqnarray*}
 
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-     |Bdt|
+     |Bdt A|
            \ar[r]_-{|outBdt|}
 &
-     |A+B><(C><Bdt><Bdt)|
+     |A+(B><Bdt><Bdt)|
 }\end{eqnarray*}
 %--------------------------------------
 
@@ -1164,13 +1193,13 @@ anaBdt f = inBdt . (recBdt (anaBdt f)) . f
 Diagrama de |anaBdt|:
 
 \xymatrix@@C=3cm{
-    |Bdt|
+    |Bdt A|
              \ar[r]^-{|outBdt|}
 &
-    |A+B><(C><Bdt><Bdt)|
+    |A+(B><Bdt><Bdt)|
 \\
-     |Bdt|
-            \ar[u]^-{|anaBdt g|}
+     |LTreeA|
+            \ar[u]^-{|anaBdt f|}
             \ar[r]_-{|f|}
 &
      |?2|
@@ -1178,7 +1207,7 @@ Diagrama de |anaBdt|:
 }
 %--------------------------------------
 
-O objetivo da função navLTree é navegar por uma àrvore, sendo a escolha do nodo seguinte efetuada através do próximo elemento da lista de boleanos dada, obtendo, no final, a àrvore de decisões ainda não tomadas.
+O objetivo da função navLTree é navegar por uma árvore, sendo a escolha do nodo seguinte efetuada através do próximo elemento da lista de boleanos dada, obtendo, no final, a árvore de decisões ainda não tomadas.
 \begin{code}
 navLTree :: LTree a -> ([Bool] -> LTree a)
 navLTree = cataLTree g
@@ -1190,25 +1219,24 @@ navLTree = cataLTree g
 
 
 %--------------------------------------
-Diagrama da função |navLTree|:
+Apresenta-se de seguida o diagrama da função |navLTree|, esta é um catamorfimo cujo gene é |[const Leaf, navAux]|:
 
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |LTree|
-           \ar[d]_-{|cataLtree([const Leaf,navAux])|}
+    |LTree A|
+           \ar[d]_-{|cataLTree g|}
 &
-    |Bdt2|
-           \ar[d]^{|recLtree cataLtree([const Leaf,navAux])|}
-           \ar[l]_-{|inLtree|}
+    |A+(A><LTree A><LTree A)|
+           \ar[d]^{|recLtree(cataLTree g)|}
+           \ar[l]_-{|inLTree|}
 \\
-     |[Bool] >< LTree|
+     |[Bool] >< LTree A|
 &
-     |Bdt3|
-           \ar[l]^-{|[const Leaf,navAux]|}
+     |A + (([Bool]><LTreeA)><([Bool]><LTreeA))|
+           \ar[l]^-{|g|}
 }
 \end{eqnarray*}
 %--------------------------------------
-
 
 
 
@@ -1235,16 +1263,16 @@ Diagrama da função |bnavLTree|:
 
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |LTree|
+    |LTree A|
            \ar[d]_-{|cataLtree g|}
 &
-    |Bdt2|
+    |A + LTree A >< LTree A|
            \ar[d]^{|recLtree (cataLtree g)|}
            \ar[l]_-{|inLtree|}
 \\
-     |LTree|
+     |(BTree Bool) >< LTree A|
 &
-     |Bdt3|
+     |A+((BTree Bool) >< LTree)><((BTree Bool) >< LTree)|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1259,8 +1287,28 @@ pbnavLTree = cataLTree g
   where g = undefined 
 \end{code}
 
+%--------------------------------------
+Diagrama da função |pbnavLTree|:
+
+\begin{eqnarray*}
+\xymatrix@@C=1cm{
+    |LTree A|
+           \ar[d]_-{|cataLtree g|}
+&
+    |A + LTree A >< LTree A|
+           \ar[d]^{|recLtree (cataLtree g)|}
+           \ar[l]_-{|inLtree|}
+\\
+     |(BTree (Dist Bool)) >< Dist(LTree A)|
+&
+     |A+((BTree (Dist Bool)) >< Dist(LTree A)) ><((BTree (Dist Bool)) >< Dist(LTree A))|
+           \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+%--------------------------------------
 
 
+Inserir aqui a resposta sobre a gaja levar guarda chuva ou não :)
 
 
 
@@ -1282,11 +1330,11 @@ main = display janela white img
 
 img :: Picture
 --img = pictures([put (-400,320)  truchet1, translate (320) (-400) truchet1, translate (-400) (-400) truchet1, translate (320) (320) truchet1])
-img = pictures([translate (-400) (320) truchet1,translate (-400) (240) truchet1, 
-  translate (-400) (160) truchet1, translate (-400) (80) truchet1, translate (-400) (0) truchet1, 
-  translate (-400) (-80) truchet1, translate (-400) (-160) truchet1, translate (-400) (-240) truchet1, 
-  translate (-400) (-320) truchet2, translate (-400) (-400) truchet2])
-
+img = pictures([translate (-400) (320) truchet1, translate (-400) (240) truchet1, 
+                translate (-400) (160) truchet1, translate (-400) (80) truchet1, 
+                translate (-400) (0) truchet1,   translate (-400) (-80) truchet1, 
+                translate (-400) (-160) truchet1, translate (-400) (-240) truchet1, 
+                translate (-400) (-320) truchet2, translate (-400) (-400) truchet2])
 \end{code}
 
 
