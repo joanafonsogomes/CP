@@ -977,19 +977,10 @@ discollect (h:t) = (lstr h) ++ discollect t
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
-<<<<<<< HEAD
-=======
-
-tar = cataExp g where
-  g = either ((  ) ++ p2) id
-  --g = either (id >< i1) (id >< i2)
-  --g = either b1 (b,[b2])
-
->>>>>>> 19cf98f81fdc605ea943033fe8d4348ffe349092
 \end{code}
 
 
-Definimos a função tar como um catamorfismo cujo gene é geneeeee, como se pode observar no seguinte diagarama.
+Definimos a função tar como um catamorfismo cujo gene é geneeeee, como se pode observar no seguinte diagarama:
 %--------------------------------------
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
@@ -1010,11 +1001,12 @@ Definimos a função tar como um catamorfismo cujo gene é geneeeee, como se pod
 
 \begin{code}
 tar = cataExp g where
-  g = concat . (map auxTar)
-    where auxTar :: (String) -> [(String b, String b)]
-          auxTar () =
-          auxTar () = 
-          auxTar () = 
+  g = undefined
+  --g = concat . (map auxTar)
+   -- where auxTar :: (String) -> [(String b, String b)]
+    --      auxTar () =
+     --     auxTar () = 
+     --     auxTar () = 
 \end{code}
 
 \begin{code}
@@ -1173,10 +1165,10 @@ O objetivo da função navLTree é navegar por uma àrvore, sendo a escolha do n
 \begin{code}
 navLTree :: LTree a -> ([Bool] -> LTree a)
 navLTree = cataLTree g
-    where g = either (\a _ -> Leaf a) trash where
-              trash (lt1, lt2) []  = Fork (lt1 [] , lt2 [])
-              trash (lt1, lt2) (True:t)  = lt1 t
-              trash (lt1, lt2) (False:t) = lt2 t
+    where g = either (\a _ -> Leaf a) navAux where
+              navAux (lt1, lt2) []  = Fork (lt1 [] , lt2 [])
+              navAux (lt1, lt2) (True:t)  = lt1 t
+              navAux (lt1, lt2) (False:t) = lt2 t
 \end{code}
 
 
@@ -1185,17 +1177,17 @@ Diagrama da função |navLTree|:
 
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |Bdt|
-           \ar[d]_-{|cataLtree g|}
+    |LTree|
+           \ar[d]_-{|cataLtree([const Leaf,navAux])|}
 &
     |Bdt2|
-           \ar[d]^{|recLtree (cataLtree g)|}
+           \ar[d]^{|recLtree cataLtree([const Leaf,navAux])|}
            \ar[l]_-{|inLtree|}
 \\
-     |LTree|
+     |[Bool] >< LTree|
 &
      |Bdt3|
-           \ar[l]^-{|g|}
+           \ar[l]^-{|[const Leaf,navAux]|}
 }
 \end{eqnarray*}
 %--------------------------------------
@@ -1215,20 +1207,40 @@ Diagrama da função |navLTree|:
 
 \begin{code}
 bnavLTree = cataLTree g
-  where g = undefined
-
-pbnavLTree = cataLTree g
-  where g = undefined 
-
+  where g = either (\a _ -> Leaf a) bnavAux where
+              bnavAux (lt1, lt2) Empty = Fork (lt1 Empty , lt2 Empty)
+              bnavAux (lt1, lt2) (Node(True,(bt1,bt2)))  = lt1 bt1
+              bnavAux (lt1, lt2) (Node(False,(bt1,bt2))) = lt2 bt2
 \end{code}
 
+%--------------------------------------
+Diagrama da função |bnavLTree|:
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |LTree|
+           \ar[d]_-{|cataLtree g|}
+&
+    |Bdt2|
+           \ar[d]^{|recLtree (cataLtree g)|}
+           \ar[l]_-{|inLtree|}
+\\
+     |LTree|
+&
+     |Bdt3|
+           \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+%--------------------------------------
 
 
 
 
 
-
-
+\begin{code}
+pbnavLTree = cataLTree g
+  where g = undefined 
+\end{code}
 
 
 
@@ -1244,20 +1256,26 @@ truchet1 = Pictures [ put (0,80) (Arc (-90) 0 40), put (80,0) (Arc 90 180 40) ]
 
 truchet2 = Pictures [ put (0,0) (Arc 0 90 40), put (80,80) (Arc 180 (-90) 40) ]
 
---- janela para visualizar:
-
 janela = InWindow
              "Truchet"        -- window title
              (800, 800)       -- window size
              (100,100)        -- window position
 
+main = display janela white img
+
+img :: Picture
+--img = pictures([put (-400,320)  truchet1, translate (320) (-400) truchet1, translate (-400) (-400) truchet1, translate (320) (320) truchet1])
+img = pictures([translate (-400) (320) truchet1,translate (-400) (240) truchet1, 
+  translate (-400) (160) truchet1, translate (-400) (80) truchet1, translate (-400) (0) truchet1, 
+  translate (-400) (-80) truchet1, translate (-400) (-160) truchet1, translate (-400) (-240) truchet1, 
+  translate (-400) (-320) truchet2, translate (-400) (-400) truchet2])
+
+\end{code}
 
 
+\begin{code}
 ----- defs auxiliares -------------
-
 put  = uncurry Translate 
-
-
 
 -------------------------------------------------
 \end{code}
