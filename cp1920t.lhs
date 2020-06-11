@@ -978,6 +978,29 @@ discollect (h:t) = (lstr h) ++ discollect t
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
 
+\end{code}
+
+
+Definimos a função tar como um catamorfismo cujo gene é geneeeee, como se pode observar no seguinte diagarama:
+%--------------------------------------
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |?1|
+           \ar[d]_-{|cataExp g|}
+&
+    |?2|
+           \ar[d]^{|recExp (cataExp g)|}
+           \ar[l]_-{|inExp|}
+\\
+     |[(a,b)]|
+&
+     |?3|
+           \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+\begin{code}
 tar = cataExp g where
   g = either  (aux)  (concat . (uncurry (aux')) )  where
       aux :: String -> [(String,String)]
@@ -1002,30 +1025,38 @@ tar = cataExp g where
 
 \end{code}
 
-%--------------------------------------
-Diagrama da função |tar|:
-\begin{eqnarray*}
-\xymatrix@@C=2cm{
-    |?1|
-           \ar[d]_-{|cataExp g|}
-&
-    |?2|
-           \ar[d]^{|recExp (cataExp g)|}
-           \ar[l]_-{|inExp|}
-\\
-     |[(a,b)]|
-&
-     |?3|
-           \ar[l]^-{|g|}
-}
-\end{eqnarray*}
-%--------------------------------------
-
 
 \begin{code}
 dic_rd = undefined
 dic_in = undefined
 \end{code}
+
+
+%--------------------------------------
+\xymatrix@@C=3cm{
+    |?1|
+           \ar[d]_-{|ana |}
+            \ar[r]^-{|??1|}
+&
+    |?2|
+           \ar[d]^{|??2|}
+\\
+     |?3|
+        \ar[d]_-{|??3|}
+        \ar[r]^-{|out|}
+&
+     |?4|
+           \ar[l]^-{|in|}
+            \ar[d]^{|??4|}
+\\
+    |?5|
+&
+    |?6|
+        \ar[l]^-{|in|}
+}
+%--------------------------------------
+
+
 
 
 
@@ -1057,6 +1088,10 @@ lrot = undefined
 splay l t =  undefined
   
 \end{code}
+
+
+
+
 
 
 
@@ -1102,7 +1137,7 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
 \xymatrix@@C=2cm{
      |Bdt|
 &
-     |Bdt|
+     |A+B><(C><Bdt><Bdt)|
            \ar[l]^-{|inBdt|}
 }
 \end{eqnarray*}
@@ -1112,7 +1147,7 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
      |Bdt|
            \ar[r]_-{|outBdt|}
 &
-     |Bdt|
+     |A+B><(C><Bdt><Bdt)|
 }\end{eqnarray*}
 %--------------------------------------
 
@@ -1125,25 +1160,82 @@ cataBdt g = g . (recBdt(cataBdt g)) . outBdt
 anaBdt f = inBdt . (recBdt (anaBdt f)) . f
 \end{code}
 %--------------------------------------
+
 Diagrama de |anaBdt|:
-DEFINAM-ME 
+
+\xymatrix@@C=3cm{
+    |Bdt|
+             \ar[r]^-{|outBdt|}
+&
+    |A+B><(C><Bdt><Bdt)|
+\\
+     |Bdt|
+            \ar[u]^-{|anaBdt g|}
+            \ar[r]_-{|f|}
+&
+     |?2|
+            \ar[u]_{|recBdt (anaBdt f)|}
+}
 %--------------------------------------
 
 O objetivo da função navLTree é navegar por uma àrvore, sendo a escolha do nodo seguinte efetuada através do próximo elemento da lista de boleanos dada, obtendo, no final, a àrvore de decisões ainda não tomadas.
 \begin{code}
 navLTree :: LTree a -> ([Bool] -> LTree a)
 navLTree = cataLTree g
-    where g = either (\a _ -> Leaf a) trash where
-              trash (lt1, lt2) []  = Fork (lt1 [] , lt2 [])
-              trash (lt1, lt2) (True:t)  = lt1 t
-              trash (lt1, lt2) (False:t) = lt2 t
+    where g = either (\a _ -> Leaf a) navAux where
+              navAux (lt1, lt2) []  = Fork (lt1 [] , lt2 [])
+              navAux (lt1, lt2) (True:t)  = lt1 t
+              navAux (lt1, lt2) (False:t) = lt2 t
 \end{code}
 
-Diagrama da função |navLTree|:
+
 %--------------------------------------
+Diagrama da função |navLTree|:
+
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |Bdt|
+    |LTree|
+           \ar[d]_-{|cataLtree([const Leaf,navAux])|}
+&
+    |Bdt2|
+           \ar[d]^{|recLtree cataLtree([const Leaf,navAux])|}
+           \ar[l]_-{|inLtree|}
+\\
+     |[Bool] >< LTree|
+&
+     |Bdt3|
+           \ar[l]^-{|[const Leaf,navAux]|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+%----------------- Problema 4 ------------------------%
+\subsection*{Problema 4}
+
+\begin{code}
+bnavLTree = cataLTree g
+  where g = either (\a _ -> Leaf a) bnavAux where
+              bnavAux (lt1, lt2) Empty = Fork (lt1 Empty , lt2 Empty)
+              bnavAux (lt1, lt2) (Node(True,(bt1,bt2)))  = lt1 bt1
+              bnavAux (lt1, lt2) (Node(False,(bt1,bt2))) = lt2 bt2
+\end{code}
+
+%--------------------------------------
+Diagrama da função |bnavLTree|:
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |LTree|
            \ar[d]_-{|cataLtree g|}
 &
     |Bdt2|
@@ -1159,17 +1251,15 @@ Diagrama da função |navLTree|:
 %--------------------------------------
 
 
-%----------------- Problema 4 ------------------------%
-\subsection*{Problema 4}
+
+
 
 \begin{code}
-bnavLTree = cataLTree g
-  where g = undefined
-
 pbnavLTree = cataLTree g
   where g = undefined 
-
 \end{code}
+
+
 
 
 
@@ -1183,17 +1273,25 @@ truchet1 = Pictures [ put (0,80) (Arc (-90) 0 40), put (80,0) (Arc 90 180 40) ]
 
 truchet2 = Pictures [ put (0,0) (Arc 0 90 40), put (80,80) (Arc 180 (-90) 40) ]
 
---- janela para visualizar:
-
 janela = InWindow
              "Truchet"        -- window title
              (800, 800)       -- window size
              (100,100)        -- window position
 
+main = display janela white img
+
+img :: Picture
+--img = pictures([put (-400,320)  truchet1, translate (320) (-400) truchet1, translate (-400) (-400) truchet1, translate (320) (320) truchet1])
+img = pictures([translate (-400) (320) truchet1,translate (-400) (240) truchet1, 
+  translate (-400) (160) truchet1, translate (-400) (80) truchet1, translate (-400) (0) truchet1, 
+  translate (-400) (-80) truchet1, translate (-400) (-160) truchet1, translate (-400) (-240) truchet1, 
+  translate (-400) (-320) truchet2, translate (-400) (-400) truchet2])
+
+\end{code}
 
 
+\begin{code}
 ----- defs auxiliares -------------
-
 put  = uncurry Translate 
 
 -------------------------------------------------
