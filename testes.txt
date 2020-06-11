@@ -1,4 +1,7 @@
 -- Exercicio 1
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_dic_rep
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_dic_red
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_dic_rd
 
 -- Exercicio 2
 
