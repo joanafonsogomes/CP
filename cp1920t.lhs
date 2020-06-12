@@ -1006,6 +1006,11 @@ Definimos a função \emph{tar} como um catamorfismo como se pode observar no se
 
 \begin{code}
 
+--tar :: (Ord v, Ord o) => Exp v [o] -> [([o], v)]
+--tar = cataExp g where 
+--      g = either (singl . (split nil id)) ((uncurry (map)) . (t >< concat)) 
+
+--t a = (ccat a) >< id
 tar :: (Ord v, Ord o) => Exp v [o] -> [([o], v)]
 tar = cataExp g where 
       g = either (singl . (split nil id)) ((uncurry (map)) . (t >< concat)) 
@@ -1017,21 +1022,16 @@ t a = (ccat a) >< id
 A função |dic_rd| tem como objetivo procurar traduções para uma determinada palavra.
 \begin{code}
 dic_rd :: String -> Dict -> Maybe [String]
-dic_rd = curry (k . uncurry (m . s))
+dic_rd s d
+    | dic_exp(d) == [] = Nothing
+    | otherwise = compara s (dic_exp d)
 
-k :: [String] -> Maybe [String]
-k [] = Nothing
-k a = Just a 
+compara :: String -> [(String,[String])] -> Maybe [String]
+compara s (h:t)
+    | fst h == s = Just (snd h)
+    | otherwise = if t == [] then Nothing else compara s t
 
-s :: String -> [String]
-s a = "" : map singl a
 
-m :: [String] -> Dict -> [String]
-m [] (Var v) = [v]
-m _ (Var v) = []
-m [] (Term o l) = []
-m (h:t) (Term o l)| o == h = (concat . map (m t)) l
-                  | otherwise = []
 \end{code}
 
 
