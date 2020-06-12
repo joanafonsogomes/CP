@@ -178,6 +178,7 @@ import List  hiding (fac)
 import Nat
 import BTree
 import LTree
+import FTree
 import Probability
 import ListUtils
 import Show
@@ -1001,33 +1002,34 @@ Definimos a função tar como um catamorfismo cujo gene é geneeeee, como se pod
 %--------------------------------------
 
 \begin{code}
-tar = cataExp g where
-  g = either  (aux)  (concat . (uncurry (aux')) )  where
-      aux :: String -> [(String,String)]
-      aux a = [(a,a)]
 
-      aux' :: String -> [[(String, String)]] -> [[(String,String)]]
-      aux' o [] = [[(o,"\"\"")]] 
-      aux' o ([(v1, v2)]:t) = if v1 == v2 then ([(o,v2)]:t)
-                              else ([(o++v1,v2)]:t)
+k a= (ccat a) >< id
 
-
-
-  --g = either (id >< i1) (id >< i2)
-  --g = either b1 (b,[b2])
-
---tar = cataExp g where
---    g = concat . (map auxTar)
---      where auxTar :: (Exp String String) -> [(String b, String b)]
---            auxTar () 
---            auxTar ()
---            auxTar ()
+tar :: (Ord v, Ord o) => Exp v [o] -> [([o], v)]
+tar = cataExp g where g = either (singl . (split nil id)) ((uncurry map) . (k >< concat))
 
 \end{code}
 
 
 \begin{code}
-dic_rd = undefined
+
+dic_rd :: String -> Dict -> Maybe [String]
+dic_rd = curry (h .uncurry (j . s))
+
+j::[String] -> Dict -> [String]
+j [] (Var v) = [v]
+j _ (Var v) = []
+j [] (Term o l) = []
+j (h:t) (Term o l)| o == h = (concat . map (j t)) l
+                  | otherwise = []
+
+h::[String] -> Maybe [String]
+h [] = Nothing
+h a = Just a 
+
+s::String -> [String]
+s a = "" : map singl a
+
 dic_in = undefined
 \end{code}
 
@@ -1132,6 +1134,7 @@ outBdt (Dec a) = Left a
 outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
 \end{code}
 
+
 %--------------------------------------
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
@@ -1228,6 +1231,7 @@ bnavLTree = cataLTree g
               bnavAux (lt1, lt2) Empty = Fork (lt1 Empty , lt2 Empty)
               bnavAux (lt1, lt2) (Node(True,(bt1,bt2)))  = lt1 bt1
               bnavAux (lt1, lt2) (Node(False,(bt1,bt2))) = lt2 bt2
+              --      LTree       BTree(Bool)
 \end{code}
 
 %--------------------------------------
@@ -1250,18 +1254,16 @@ Diagrama da função |bnavLTree|:
 \end{eqnarray*}
 %--------------------------------------
 
-
-
-
-
 \begin{code}
 pbnavLTree = cataLTree g
-  where g = undefined 
-\end{code}
-
-
-
-
+  where g = undefined
+  {-
+  where g = either (\a _ -> D[(Leaf a, 1)]) pbnavAux where
+              pbnavAux (dlt1, dlt2) Empty  = mkD(unD(dlt1) ++ unD(dlt2))
+              pbnavAux (dlt1, dlt2) (Node( D[(True,  x), (False, y)], (dbt1, dbt2)))  = if (x >= y) then (dlt1, dbt1) else (dlt2, dbt2)
+              --     Dist(LTree)    BTree(Dist Bool)         
+              -}
+\end{code}        
 
 
 %----------------- Problema 5 ------------------------%
