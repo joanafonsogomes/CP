@@ -1004,6 +1004,7 @@ Definimos a função \emph{tar} como um catamorfismo como se pode observar no se
 %--------------------------------------
 
 \begin{code}
+<<<<<<< HEAD
 
 tar :: (Ord v, Ord o) => Exp v [o] -> [([o], v)]
 tar = cataExp g where 
@@ -1011,6 +1012,23 @@ tar = cataExp g where
 
 t a = (ccat a) >< id
 
+=======
+tar = cataExp g where
+  g = either  (aux)  (concat . (uncurry (aux')) ) where
+      aux :: String -> [(String,String)]
+      --aux [] = [("Realpoop",[])]
+      aux a = [([],a)]
+
+      aux' :: String -> [[(String, String)]] -> [[(String,String)]]
+      --aux' _ [] = []
+      --aux' o [] = [[(o,"\"\"")]] ~ it says is redundant 
+      aux' o ([]:t) = ([]:t)
+      aux' o ([(v1, v2)]:t) = if v1 == v2 then ([(o,v2)]):t
+                              --  (if v2 == "BRIM" then (([(o++"poop",v2)]):t) else ([(o,v2)]):t)
+                              else ([(o++v1,v2)]):t                            
+      --aux' o (((_, _):_:_):t) = ([("green","blue"++[])]:t)
+      aux' o (((v1, v2):k):t) = ([(o++v1,v2)]:k:t)
+>>>>>>> 51c6231b51ddc86a6017d67e7081b9db03699d4f
 \end{code}
 
 A função |dic_rd| tem como objetivo procurar traduções para uma determinada palavra.
