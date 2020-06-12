@@ -972,6 +972,8 @@ outras funções auxiliares que sejam necessárias.
 %----------------- Problema 1 ------------------------%
 \subsection*{Problema 1}
 
+A função \emph{discollect} constroi pares, como por exemplo, (palavra, tradução) apartir de uma lista de traduções associadas a essa palavra.
+
 \begin{code}
 discollect :: (Ord b, Ord a) => [(b, [a])] -> [(b, a)]
 discollect [] = []
@@ -982,38 +984,60 @@ dic_exp = collect . tar
 \end{code}
 
 
-Definimos a função tar como um catamorfismo cujo gene é geneeeee, como se pode observar no seguinte diagarama:
+Definimos a função \emph{tar} como um catamorfismo como se pode observar no seguinte diagarama:
 %--------------------------------------
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |?1|
+    |Exp V [O]|
            \ar[d]_-{|cataExp g|}
 &
-    |?2|
+    |V+O* >< (Exp V [O])*|
            \ar[d]^{|recExp (cataExp g)|}
            \ar[l]_-{|inExp|}
 \\
-     |[(a,b)]|
+     |[([O],V)]|
 &
-     |?3|
+     |V+O* >< [([O],V)]*|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
 %--------------------------------------
 
 \begin{code}
-tar = cataExp g where
-  g = undefined
-  --g = concat . (map auxTar)
-   -- where auxTar :: (String) -> [(String b, String b)]
-    --      auxTar () =
-     --     auxTar () = 
-     --     auxTar () = 
+
+tar :: (Ord v, Ord o) => Exp v [o] -> [([o], v)]
+tar = cataExp g where 
+      g = either (singl . (split nil id)) ((uncurry (map)) . (t >< concat)) 
+
+t a = (ccat a) >< id
+
 \end{code}
 
+A função |dic_rd| tem como objetivo procurar traduções para uma determinada palavra.
 \begin{code}
-dic_rd = undefined
+dic_rd :: String -> Dict -> Maybe [String]
+dic_rd = curry (k . uncurry (m . s))
+
+k :: [String] -> Maybe [String]
+k [] = Nothing
+k a = Just a 
+
+s :: String -> [String]
+s a = "" : map singl a
+
+m :: [String] -> Dict -> [String]
+m [] (Var v) = [v]
+m _ (Var v) = []
+m [] (Term o l) = []
+m (h:t) (Term o l)| o == h = (concat . map (m t)) l
+                  | otherwise = []
+\end{code}
+
+
+\begin{code}
+
 dic_in = undefined
+
 \end{code}
 
 
@@ -1066,7 +1090,7 @@ maisEsq = cataBTree g
 \end{code}
 
 %--------------------------------------
-Diagrama da função |maisEsq|:
+Diagrama da função \emph{maisEsq}:
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
     |BTree A|
@@ -1092,10 +1116,10 @@ insOrd' x = cataBTree g
 insOrd a x = undefined
 
 isOrd' = cataBTree g
-  where g =  undefined
-  --either (const true) isOrd'' where
-            --isOrd'' = undefined
+  where g = split (either true false) isOrd'' where
+            isOrd''= undefined
             --isOrd'' (Node(a,(Empty,Empty))) = (true,a)
+            --isOrd'' either (Node(a,(Empty,Empty))) = (a)
             --isOrd'' (Node(a,(Node(b,(_,_)))),_) = if a > b then true else false
             --isOrd'' (Node(a,(Empty,(Node(b,(_,_)))),_) = if a < b then true else false
             --isOrd'' (Node(a,((Node(b,(_,_))),(Node(c,(_,_)))),_) = if a > b && a < c then true else false
