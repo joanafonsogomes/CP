@@ -1003,12 +1003,20 @@ Definimos a função tar como um catamorfismo cujo gene é geneeeee, como se pod
 
 \begin{code}
 tar = cataExp g where
-  g = undefined
-  --g = concat . (map auxTar)
-   -- where auxTar :: (String) -> [(String b, String b)]
-    --      auxTar () =
-     --     auxTar () = 
-     --     auxTar () = 
+  g = either  (aux)  (concat . (uncurry (aux')) ) where
+      aux :: String -> [(String,String)]
+      --aux [] = [("Realpoop",[])]
+      aux a = [([],a)]
+
+      aux' :: String -> [[(String, String)]] -> [[(String,String)]]
+      --aux' _ [] = []
+      --aux' o [] = [[(o,"\"\"")]] ~ it says is redundant 
+      aux' o ([]:t) = ([]:t)
+      aux' o ([(v1, v2)]:t) = if v1 == v2 then ([(o,v2)]):t
+                              --  (if v2 == "BRIM" then (([(o++"poop",v2)]):t) else ([(o,v2)]):t)
+                              else ([(o++v1,v2)]):t                            
+      --aux' o (((_, _):_:_):t) = ([("green","blue"++[])]:t)
+      aux' o (((v1, v2):k):t) = ([(o++v1,v2)]:k:t)
 \end{code}
 
 \begin{code}
