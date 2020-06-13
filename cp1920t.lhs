@@ -1018,12 +1018,12 @@ A função |dic_rd| tem como objetivo procurar traduções para uma determinada 
 \begin{code}
 dic_rd :: String -> Dict -> Maybe [String]
 dic_rd p b = if dic_exp(b) == [] then Nothing
-             else myCompare p (dic_exp b)
+             else cmp  p (dic_exp b)
 
-myCompare :: String -> [(String,[String])] -> Maybe [String]
-myCompare p (s1:s2) = if fst s1 == p then Just (snd s1)
+cmp  :: String -> [(String,[String])] -> Maybe [String]
+cmp  p (s1:s2) = if fst s1 == p then Just (snd s1)
                       else if s2 == [] then Nothing 
-                           else myCompare p s2
+                           else cmp p s2
 \end{code}
 
 
