@@ -1022,14 +1022,13 @@ t a = (ccat a) >< id
 A função |dic_rd| tem como objetivo procurar traduções para uma determinada palavra.
 \begin{code}
 dic_rd :: String -> Dict -> Maybe [String]
-dic_rd s d
-    | dic_exp(d) == [] = Nothing
-    | otherwise = compara s (dic_exp d)
+dic_rd p d = if  dic_exp(d) == [] then Nothing
+             else compara p (dic_exp d)
 
 compara :: String -> [(String,[String])] -> Maybe [String]
-compara s (h:t)
-    | fst h == s = Just (snd h)
-    | otherwise = if t == [] then Nothing else compara s t
+compara p (h:t) = if fst h == p then Just (snd h)
+                  else if t == [] then Nothing
+                       else compara p t
 
 
 \end{code}
@@ -1038,11 +1037,11 @@ compara s (h:t)
 \begin{code}
 
 dic_in = undefined
-
+ 
 \end{code}
 
 
-%--------------------------------------
+%-------------------------------------p
 \xymatrix@@C=3cm{
     |?1|
            \ar[d]_-{|ana |}
