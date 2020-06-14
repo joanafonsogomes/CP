@@ -989,16 +989,16 @@ Definimos a função \emph{tar} como um catamorfismo como se pode observar no se
 %--------------------------------------
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |Exp V [O]|
+    |Exp V O*|
            \ar[d]_-{|cataExp g|}
 &
-    |V+O* >< (Exp V [O])*|
+    |V+O* >< (Exp V O*)*|
            \ar[d]^{|recExp (cataExp g)|}
            \ar[l]_-{|inExp|}
 \\
-     |[([O],V)]|
+     |((O*,V))*|
 &
-     |V+O* >< [([O],V)]*|
+     |V+O* >< ((O*,V))*|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1036,25 +1036,25 @@ dic_in = undefined
 
 %-------------------------------------p
 \xymatrix@@C=3cm{
-    |?1|
-           \ar[d]_-{|ana |}
-            \ar[r]^-{|??1|}
+    |String|
+           \ar[d]_-{|anaList h|}
+            \ar[r]^-{|h|}
 &
-    |?2|
-           \ar[d]^{|??2|}
+    |1+A >< String|
+           \ar[d]^{|recList(anaList h)|}
 \\
-     |?3|
-        \ar[d]_-{|??3|}
+     |String*|
+        \ar[d]_-{|cataList g|}
         \ar[r]^-{|out|}
 &
-     |?4|
+     |1+A >< String*|
            \ar[l]^-{|in|}
-            \ar[d]^{|??4|}
+            \ar[d]^{|recList(cataList g)|}
 \\
-    |?5|
+    |(String,String*)*|
 &
-    |?6|
-        \ar[l]^-{|in|}
+    |1+A+(String,String*)*|
+        \ar[l]^-{|g|}
 }
 %--------------------------------------
 
@@ -1089,13 +1089,13 @@ Diagrama da função \emph{maisEsq}:
     |BTree A|
            \ar[d]_-{|cataBdt g|}
 &
-    |? + (A >< BTree A >< BTree A)|
+    |1 + A >< (BTree A >< BTree A)|
            \ar[d]^{|recBdt (cataBdt g)|}
            \ar[l]_-{|inBdt|}
 \\
      |Maybe A|
 &
-     |??|
+     |1 + A >< (Maybe A >< Maybe A)|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1110,12 +1110,12 @@ insOrd a x = undefined
 
 isOrd' = cataBTree g
   where g = split (either true false) isOrd'' where
-            isOrd''= undefined
-            --isOrd'' (Node(a,(Empty,Empty))) = (true,a)
-            --isOrd'' either (Node(a,(Empty,Empty))) = (a)
-            --isOrd'' (Node(a,(Node(b,(_,_)))),_) = if a > b then true else false
-            --isOrd'' (Node(a,(Empty,(Node(b,(_,_)))),_) = if a < b then true else false
-            --isOrd'' (Node(a,((Node(b,(_,_))),(Node(c,(_,_)))),_) = if a > b && a < c then true else false
+            --isOrd''= undefined
+            isOrd'' ((a,(Empty,Empty))) = true
+
+            --isOrd'' (a,(b,(_,_)))),_)) = if a > b then true else false
+            --isOrd'' (a,(Empty,(Node(b,(_,_)))),_) = if a < b then true else false
+            --isOrd'' (a,((Node(b,(_,_))),(Node(c,(_,_)))),_) = if a > b && a < c then true else false
 
 isOrd = undefined
 \end{code} 
@@ -1127,6 +1127,15 @@ rrot = undefined
 lrot = undefined
 
 splay l t =  undefined
+
+{- 
+splay l t =  flip (cataBTree (either g1 g2)) where
+             g1 a = Empty
+             g2 (a,(left,right)) [] = Node(a,(left [], r []))
+             g2 (a,(left,right)) (h:t) | h==true = l t
+                                       | otherwise = r t
+
+-}
   
 \end{code}
 
@@ -1173,7 +1182,7 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
 \xymatrix@@C=2cm{
      |Bdt A|
 &
-     |A+(B><Bdt><Bdt)|
+     |A+(B><(Bdt><Bdt))|
            \ar[l]^-{|inBdt|}
 }
 \end{eqnarray*}
@@ -1183,7 +1192,7 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
      |Bdt A|
            \ar[r]_-{|outBdt|}
 &
-     |A+(B><Bdt><Bdt)|
+     |A+(B><(Bdt><Bdt))|
 }\end{eqnarray*}
 %--------------------------------------
 
@@ -1203,13 +1212,13 @@ Diagrama de |anaBdt|:
     |Bdt A|
              \ar[r]^-{|outBdt|}
 &
-    |A+(B><Bdt><Bdt)|
+    |A+(B>< (Bdt><Bdt))|
 \\
      |LTreeA|
             \ar[u]^-{|anaBdt f|}
             \ar[r]_-{|f|}
 &
-     |?2|
+     |A+(B >< (LTree A >< LTree A))|
             \ar[u]_{|recBdt (anaBdt f)|}
 }
 %--------------------------------------
@@ -1237,9 +1246,9 @@ Apresenta-se de seguida o diagrama da função |navLTree|, esta é um catamorfim
            \ar[d]^{|recLtree(cataLTree g)|}
            \ar[l]_-{|inLTree|}
 \\
-     |[Bool] >< LTree A|
+     |Bool* >< LTree A|
 &
-     |A + (([Bool]><LTreeA)><([Bool]><LTreeA))|
+     |A + ((Bool* >< LTreeA)><(Bool* >< TreeA))|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1301,7 +1310,7 @@ pbnavLTree = cataLTree g
 Diagrama da função |pbnavLTree|:
 
 \begin{eqnarray*}
-\xymatrix@@C=1cm{
+\xymatrix@@C=0.3cm@@R=1cm{
     |LTree A|
            \ar[d]_-{|cataLtree g|}
 &
