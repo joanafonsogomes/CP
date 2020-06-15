@@ -1344,15 +1344,30 @@ janela = InWindow
              (800, 800)       -- window size
              (100,100)        -- window position
 
-main = display janela white img
+main = do
+       putStrLn "Colunas: "
+       inputX <- getLine
+       let x = (read inputX :: Float)
+       putStrLn "Linhas: "
+       inputY <- getLine
+       let y = (read inputY :: Float)
+       if(x>0 && y>0) 
+        then (Control.Monad.join (fmap id ((fmap (display janela white) (pic x y))))) 
+        else (Control.Monad.join (fmap id (fmap (display janela white) (pic 10 10))))
 
-img :: Picture
---img = pictures([put (-400,320)  truchet1, translate (320) (-400) truchet1, translate (-400) (-400) truchet1, translate (320) (320) truchet1])
-img = pictures([translate (-400) (320) truchet1, translate (-400) (240) truchet1, 
-                translate (-400) (160) truchet1, translate (-400) (80) truchet1, 
-                translate (-400) (0) truchet1,   translate (-400) (-80) truchet1, 
-                translate (-400) (-160) truchet1, translate (-400) (-240) truchet1, 
-                translate (-400) (-320) truchet2, translate (-400) (-400) truchet2])
+pic :: Float -> Float -> IO Picture
+pic x y = fmap pictures (mapM (fmap id) (coluna(-40*x) y (40*x) []))
+
+coluna :: Float -> Float -> Float -> [IO Picture] -> [IO Picture]
+coluna x y a l 
+            | x>=a = l
+            | otherwise = coluna (x+80) y a (l++(linha x (-40*y) (40*y) []))
+
+linha :: Float -> Float -> Float -> [IO Picture] -> [IO Picture]
+linha x y a l 
+              | y>=a = l 
+              | otherwise = linha x (y+80) a (l++[fmap (put (x,y)) (fmap head (permuta[truchet1,truchet2]))])   
+
 \end{code}
 
 
