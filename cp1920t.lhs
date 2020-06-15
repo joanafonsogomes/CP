@@ -4,6 +4,7 @@
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
 \usepackage{graphicx}
 \usepackage{cp1920t}
+\usepackage{caption}
 \usepackage{subcaption}
 \usepackage{adjustbox}
 \usepackage{color}
@@ -1400,9 +1401,15 @@ Com este truchet, abcissa x e ordenada y é criado um mosaico após um fmap apli
 \begin{code}
 ----- defs auxiliares -------------
 put  = uncurry Translate 
-
 -------------------------------------------------
 \end{code}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=7.5cm]{images/m2.png}
+\caption{Mosaico de Truchet gerado a partir do código anterior.} \label{fig1}
+\end{center}
+\end{figure} 
 
 %----------------- Fim do anexo com soluções dos alunos ------------------------%
 
