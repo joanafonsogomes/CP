@@ -4,6 +4,7 @@
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
 \usepackage{graphicx}
 \usepackage{cp1920t}
+\usepackage{caption}
 \usepackage{subcaption}
 \usepackage{adjustbox}
 \usepackage{color}
@@ -989,16 +990,16 @@ Definimos a função \emph{tar} como um catamorfismo como se pode observar no se
 %--------------------------------------
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |Exp V [O]|
+    |Exp V O*|
            \ar[d]_-{|cataExp g|}
 &
-    |V+O* >< (Exp V [O])*|
+    |V+O* >< (Exp V O*)*|
            \ar[d]^{|recExp (cataExp g)|}
            \ar[l]_-{|inExp|}
 \\
-     |[([O],V)]|
+     |((O*,V))*|
 &
-     |V+O* >< [([O],V)]*|
+     |V+O* >< ((O*,V))*|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1035,25 +1036,25 @@ dic_in a b c = dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a
 
 %-------------------------------------p
 \xymatrix@@C=3cm{
-    |?1|
-           \ar[d]_-{|ana |}
-            \ar[r]^-{|??1|}
+    |String|
+           \ar[d]_-{|anaList h|}
+            \ar[r]^-{|h|}
 &
-    |?2|
-           \ar[d]^{|??2|}
+    |1+A >< String|
+           \ar[d]^{|recList(anaList h)|}
 \\
-     |?3|
-        \ar[d]_-{|??3|}
+     |String*|
+        \ar[d]_-{|cataList g|}
         \ar[r]^-{|out|}
 &
-     |?4|
+     |1+A >< String*|
            \ar[l]^-{|in|}
-            \ar[d]^{|??4|}
+            \ar[d]^{|recList(cataList g)|}
 \\
-    |?5|
+    |(String,String*)*|
 &
-    |?6|
-        \ar[l]^-{|in|}
+    |1+A+(String,String*)*|
+        \ar[l]^-{|g|}
 }
 %--------------------------------------
 
@@ -1088,13 +1089,13 @@ Diagrama da função \emph{maisEsq}:
     |BTree A|
            \ar[d]_-{|cataBdt g|}
 &
-    |? + (A >< BTree A >< BTree A)|
+    |1 + A >< (BTree A >< BTree A)|
            \ar[d]^{|recBdt (cataBdt g)|}
            \ar[l]_-{|inBdt|}
 \\
      |Maybe A|
 &
-     |??|
+     |1 + A >< (Maybe A >< Maybe A)|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1116,12 +1117,11 @@ isOrd' = cataBTree g
 isOrd' = cataBTree g
   where g = split (either true false) isOrd'' where
             --isOrd''= undefined
-            isOrd'' (Node(a,(Empty,Empty))) = (True,a)
-            isOrd'' either (Node(a,(Empty,Empty))) = (a)
-            isOrd'' (Node(a,(Node(b,(_,_)))),_) = if a > b then True else False
-            isOrd'' (Node(a,(Empty,(Node(b,(_,_)))),_))= if a < b then True else False
-            isOrd'' (Node(a,((Node(b,(_,_))),(Node(c,(_,_)))),_)) = if a > b && a < c then True else False
--}
+            --isOrd'' ((a,(Empty,Empty))) = true
+            --isOrd'' (a,(b,(_,_)))),_)) = if a > b then true else false
+            --isOrd'' (a,(Empty,(Node(b,(_,_)))),_) = if a < b then true else false
+            --isOrd'' (a,((Node(b,(_,_))),(Node(c,(_,_)))),_) = if a > b && a < c then true else false
+            -}
 
 isOrd = undefined
 \end{code} 
@@ -1133,6 +1133,15 @@ rrot = undefined
 lrot = undefined
 
 splay l t =  undefined
+
+{- 
+splay l t =  flip (cataBTree (either g1 g2)) where
+             g1 a = Empty
+             g2 (a,(left,right)) [] = Node(a,(left [], r []))
+             g2 (a,(left,right)) (h:t) | h==true = l t
+                                       | otherwise = r t
+
+-}
   
 \end{code}
 
@@ -1179,7 +1188,7 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
 \xymatrix@@C=2cm{
      |Bdt A|
 &
-     |A+(B><Bdt><Bdt)|
+     |A+(B><(Bdt><Bdt))|
            \ar[l]^-{|inBdt|}
 }
 \end{eqnarray*}
@@ -1189,7 +1198,7 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
      |Bdt A|
            \ar[r]_-{|outBdt|}
 &
-     |A+(B><Bdt><Bdt)|
+     |A+(B><(Bdt><Bdt))|
 }\end{eqnarray*}
 %--------------------------------------
 
@@ -1209,13 +1218,13 @@ Diagrama de |anaBdt|:
     |Bdt A|
              \ar[r]^-{|outBdt|}
 &
-    |A+(B><Bdt><Bdt)|
+    |A+(B>< (Bdt><Bdt))|
 \\
      |LTreeA|
             \ar[u]^-{|anaBdt f|}
             \ar[r]_-{|f|}
 &
-     |?2|
+     |A+(B >< (LTree A >< LTree A))|
             \ar[u]_{|recBdt (anaBdt f)|}
 }
 %--------------------------------------
@@ -1243,9 +1252,9 @@ Apresenta-se de seguida o diagrama da função |navLTree|, esta é um catamorfim
            \ar[d]^{|recLtree(cataLTree g)|}
            \ar[l]_-{|inLTree|}
 \\
-     |[Bool] >< LTree A|
+     |Bool* >< LTree A|
 &
-     |A + (([Bool]><LTreeA)><([Bool]><LTreeA))|
+     |A + ((Bool* >< LTreeA)><(Bool* >< TreeA))|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1309,7 +1318,7 @@ join_dist f (D d) (D d') = D [ (f (x, y),p*q) | (x,p) <- d, (y,q) <- d']
 Diagrama da função |pbnavLTree|:
 
 \begin{eqnarray*}
-\xymatrix@@C=1cm{
+\xymatrix@@C=0.3cm@@R=1cm{
     |LTree A|
            \ar[d]_-{|cataLtree g|}
 &
@@ -1343,24 +1352,71 @@ janela = InWindow
              (800, 800)       -- window size
              (100,100)        -- window position
 
-main = display janela white img
+main = do
+       putStrLn "Mosaicos por coluna: "
+       inputY <- getLine
+       let y = (read inputY :: Float)
+       putStrLn "Mosaicos por linha: "
+       inputX <- getLine
+       let x = (read inputX :: Float)
+       if(x>0 && y>0) 
+        then (Control.Monad.join ((fmap (display janela white) (pic y x))))
+        else (Control.Monad.join (fmap (display janela white) (pic 10 10)))
 
-img :: Picture
---img = pictures([put (-400,320)  truchet1, translate (320) (-400) truchet1, translate (-400) (-400) truchet1, translate (320) (320) truchet1])
-img = pictures([translate (-400) (320) truchet1, translate (-400) (240) truchet1, 
-                translate (-400) (160) truchet1, translate (-400) (80) truchet1, 
-                translate (-400) (0) truchet1,   translate (-400) (-80) truchet1, 
-                translate (-400) (-160) truchet1, translate (-400) (-240) truchet1, 
-                translate (-400) (-320) truchet2, translate (-400) (-400) truchet2])
+pic :: Float -> Float -> IO Picture
+pic y x = fmap pictures (mapM (fmap id) (coluna(-40*y) x (40*y) []))
+
+coluna :: Float -> Float -> Float -> [IO Picture] -> [IO Picture]
+coluna y x a l 
+            | y>=a = l
+            | otherwise = coluna (y+80) x a (l++(linha y (-40*x) (40*x) []))
+
+linha :: Float -> Float -> Float -> [IO Picture] -> [IO Picture]
+linha y x a l 
+              | x>=a = l 
+              | otherwise = linha y (x+80) a (l++[fmap (put (y,x)) (fmap head (permuta[truchet1,truchet2]))])   
+
 \end{code}
+
+Explicação da resolução do exercício 5:
+Começámos por criar uma main onde pedimos ao utilizador para introduzir o número de mosaicos por linhas e mosaicos por colunas.
+Caso não coloque valores positivos, é criado um mosaico 10x10. 
+Para criar o mosaico, é feito um join de um IO(IO()) após um fmap que aplica a função display janela white à função auxiliar pic que cria uma IO Picture a partir do número de linhas e colunas.
+Esta função pic tem como objetivo transformar a lista de IO Picture numa só IO Picture. 
+Para isso, é feito um fmap que aplica a função pictures à lista de IO Picture. 
+Para obter esta última, é necessário fazer um mapM que aplica um fmap id (pois apenas queremos trabalhar sobre as Picture) à lista de IO Picture.
+A lista que contém as IO Picture que formam o mosaico, são obtidas recorrendo a recursividade. 
+Dando dois números x e y, estes representam respetivamente o número de mosaicos por linha e o número de mosaicos por coluna.
+Os mosaicos terão como ordenada mínima -40*y e como ordenada máxima 40*y.
+Isto porque, se a janela dada fica completa com 10x10 mosaicos, então a abcissa e ordenada mínimas do referencial é -400 
+e absissa máxima e ordenada máxima do referencial é +400. Assim, a ordenada mínima que os mosaicos podem obter será (-y*400)/10 e a ordenada máxima será (y*400)/10.
+Começando na ordenada mais baixa, a função coluna vai concatenando as linhas correspondentes à coluna. 
+A ordenada da seguinte coluna de mosaicos será y+80 e esta coluna será concatenada com a anterior.
+A recursividade pára quando se atinge a ordenada máxima. 
+Para criar as linhas do mosaico, procede-se da mesma forma como para a criação das colunas. 
+A abcissa mínima será -40*x e a abcissa máxima será 40*x.
+O procedimento da função linha é o mesmo explicado anteriormente no entanto, é nesta função que são criadas as Picture e inseridas na lista. 
+Para isso, é feita a permuta dos dois truchet fornecidos. É feito um fmap à lista resultante aplicando a função head, obtendo-se assim um truchet aleatório. 
+Com este truchet, abcissa x e ordenada y é criado um mosaico após um fmap aplicado à função put(y,x). 
+
+
+
+
+
 
 
 \begin{code}
 ----- defs auxiliares -------------
 put  = uncurry Translate 
-
 -------------------------------------------------
 \end{code}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=7.5cm]{images/m2.png}
+\caption{Mosaico de Truchet gerado a partir do código anterior.} \label{fig1}
+\end{center}
+\end{figure} 
 
 %----------------- Fim do anexo com soluções dos alunos ------------------------%
 
