@@ -1028,8 +1028,8 @@ cmp  p (s1:s2) = if fst s1 == p then Just (snd s1)
 \end{code}
 
 \begin{code}
-dic_in :: String -> String -> Dict -> Dict
-dic_in a b c = dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a b ))) (discollect(dic_exp(c))  ))))
+dic_in a b c = if ( a=="" && b=="") then c
+               else dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a b ))) (discollect(dic_exp(c))  ))))
  
 \end{code}
 
