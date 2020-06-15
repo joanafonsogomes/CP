@@ -1345,30 +1345,56 @@ janela = InWindow
              (100,100)        -- window position
 
 main = do
-       putStrLn "Colunas: "
-       inputX <- getLine
-       let x = (read inputX :: Float)
-       putStrLn "Linhas: "
+       putStrLn "Mosaicos por coluna: "
        inputY <- getLine
        let y = (read inputY :: Float)
+       putStrLn "Mosaicos por linha: "
+       inputX <- getLine
+       let x = (read inputX :: Float)
        if(x>0 && y>0) 
-        then (Control.Monad.join (fmap id ((fmap (display janela white) (pic x y))))) 
-        else (Control.Monad.join (fmap id (fmap (display janela white) (pic 10 10))))
+        then (Control.Monad.join ((fmap (display janela white) (pic y x))))
+        else (Control.Monad.join (fmap (display janela white) (pic 10 10)))
 
 pic :: Float -> Float -> IO Picture
-pic x y = fmap pictures (mapM (fmap id) (coluna(-40*x) y (40*x) []))
+pic y x = fmap pictures (mapM (fmap id) (coluna(-40*y) x (40*y) []))
 
 coluna :: Float -> Float -> Float -> [IO Picture] -> [IO Picture]
-coluna x y a l 
-            | x>=a = l
-            | otherwise = coluna (x+80) y a (l++(linha x (-40*y) (40*y) []))
+coluna y x a l 
+            | y>=a = l
+            | otherwise = coluna (y+80) x a (l++(linha y (-40*x) (40*x) []))
 
 linha :: Float -> Float -> Float -> [IO Picture] -> [IO Picture]
-linha x y a l 
-              | y>=a = l 
-              | otherwise = linha x (y+80) a (l++[fmap (put (x,y)) (fmap head (permuta[truchet1,truchet2]))])   
+linha y x a l 
+              | x>=a = l 
+              | otherwise = linha y (x+80) a (l++[fmap (put (y,x)) (fmap head (permuta[truchet1,truchet2]))])   
 
 \end{code}
+
+Explicação da resolução do exercício 5:
+Começámos por criar uma main onde pedimos ao utilizador para introduzir o número de mosaicos por linhas e mosaicos por colunas.
+Caso não coloque valores positivos, é criado um mosaico 10x10. 
+Para criar o mosaico, é feito um join de um IO(IO()) após um fmap que aplica a função display à função auxiliar pic que cria uma IO Picture a partir do número de linhas e colunas.
+Esta função pic tem como objetivo transformar a lista de IO Picture numa só IO Picture. 
+Para isso, é feito um fmap que aplica a função pictures à lista de IO Picture. 
+Para obter esta última, é necessário fazer um mapM que aplica um fmap id (pois apenas queremos trabalhar sobre as Picture) à lista de IO Picture.
+A lista que contém as IO Picture que formam o mosaico, são obtidas recorrendo a recursividade. 
+Dando dois números x e y, estes representam respetivamente o número de mosaicos por linha e o número de mosaicos por coluna.
+Os mosaicos terão como ordenada mínima -40*y e como ordenada máxima 40*y.
+Isto porque, se a janela dada fica completa com 10x10 mosaicos, então a abcissa e ordenada mínimas do referencial é -400 
+e absissa máxima e ordenada máxima do referencial é +400. Assim, a ordenada mínima que os mosaicos podem obter será (-y*400)/10 e a ordenada máxima será (y*400)/10.
+Começando na ordenada mais baixa, a função coluna vai concatenando as linhas correspondentes à coluna. 
+A ordenada da seguinte coluna de mosaicos será y+80 e esta coluna será concatenada com a anterior.
+A recursividade pára quando se atinge a ordenada máxima. 
+Para criar as linhas do mosaico, procede-se da mesma forma como para a criação das colunas. 
+A abcissa mínima será -40*x e a abcissa máxima será 40*x.
+O procedimento da função linha é o mesmo explicado anteriormente no entanto, é nesta função que são criadas as Picture e inseridas na lista. 
+Para isso, é feita a permuta dos dois truchet fornecidos. É feito um fmap à lista resultante aplicando a função head, obtendo-se assim um truchet aleatório. 
+Com este truchet, abcissa x e ordenada y é criado um mosaico após um fmap aplicado à função put(y,x). 
+
+
+
+
+
 
 
 \begin{code}
