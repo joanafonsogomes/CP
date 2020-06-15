@@ -18,7 +18,18 @@ quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_af
 -- Exercicio 4
 inBdt(Right ("2a feira", ( inBdt(Right ("chuva na ida?", ( inBdt(Left "precisa"), inBdt(Right ("chuva no regresso?", (inBdt(Left "precisa"), inBdt(Left "nao precisa"))))) )) , inBdt(Left "nao precisa"))))                    
 extLTree(Query ("2a feira",(Query ("chuva na ida?",(Dec "precisa",Query ("chuva no regresso?",(Dec "precisa",Dec "nao precisa")))),Dec "nao precisa")) )                                                                              
-bnavLTree (Fork (Fork (Leaf "precisa",Fork (Leaf "precisa",Leaf "nao precisa")),Leaf "nao precisa") ) (Node(True, (Empty,Empty)))                                                                                            
+bnavLTree (Fork (Fork (Leaf "precisa",Fork (Leaf "precisa",Leaf "nao precisa")),Leaf "nao precisa") ) (Node(True, (Empty,Empty)))              
+
+unD(pbnavLTree (Fork (Fork (Leaf "precisa",Fork (Leaf "precisa",Leaf "nao precisa")),Leaf "nao precisa")) (Node(D[(True,0.8), (False, 0.2)], (Empty, Node(D[(True, 0.6),(False, 0.4)],(Empty, Empty))))) ) 
+
+LTree:
+(Fork (Fork (Leaf "precisa",Fork (Leaf "precisa",Leaf "nao precisa")),Leaf "nao precisa"))   
+
+BTree(Dist Bool):
+(Node(D[(True,0.8), (False, 0.2)], (Empty, Node(D[(True, 0.6),(False, 0.4)],(Empty, Empty)))))
+
+
+                                                                              
 
 
 -- Exercicio 5

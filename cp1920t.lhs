@@ -1026,10 +1026,9 @@ cmp  p (s1:s2) = if fst s1 == p then Just (snd s1)
                            else cmp p s2
 \end{code}
 
-
 \begin{code}
-
-dic_in = undefined
+dic_in :: String -> String -> Dict -> Dict
+dic_in a b c = dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a b ))) (discollect(dic_exp(c))  ))))
  
 \end{code}
 
@@ -1109,13 +1108,20 @@ insOrd' x = cataBTree g
 insOrd a x = undefined
 
 isOrd' = cataBTree g
+  where g = undefined
+  -- where g = split (either true false) isOrd'' where
+     --       isOrd'' (a,(Empty,Empty)) = (true,(a,(Empty,Empty)))
+
+{-
+isOrd' = cataBTree g
   where g = split (either true false) isOrd'' where
-            isOrd''= undefined
-            --isOrd'' (Node(a,(Empty,Empty))) = (true,a)
-            --isOrd'' either (Node(a,(Empty,Empty))) = (a)
-            --isOrd'' (Node(a,(Node(b,(_,_)))),_) = if a > b then true else false
-            --isOrd'' (Node(a,(Empty,(Node(b,(_,_)))),_) = if a < b then true else false
-            --isOrd'' (Node(a,((Node(b,(_,_))),(Node(c,(_,_)))),_) = if a > b && a < c then true else false
+            --isOrd''= undefined
+            isOrd'' (Node(a,(Empty,Empty))) = (True,a)
+            isOrd'' either (Node(a,(Empty,Empty))) = (a)
+            isOrd'' (Node(a,(Node(b,(_,_)))),_) = if a > b then True else False
+            isOrd'' (Node(a,(Empty,(Node(b,(_,_)))),_))= if a < b then True else False
+            isOrd'' (Node(a,((Node(b,(_,_))),(Node(c,(_,_)))),_)) = if a > b && a < c then True else False
+-}
 
 isOrd = undefined
 \end{code} 
@@ -1215,6 +1221,7 @@ Diagrama de |anaBdt|:
 %--------------------------------------
 
 O objetivo da função navLTree é navegar por uma árvore, sendo a escolha do nodo seguinte efetuada através do próximo elemento da lista de boleanos dada, obtendo, no final, a árvore de decisões ainda não tomadas.
+
 \begin{code}
 navLTree :: LTree a -> ([Bool] -> LTree a)
 navLTree = cataLTree g
@@ -1223,7 +1230,6 @@ navLTree = cataLTree g
               navAux (lt1, lt2) (True:t)  = lt1 t
               navAux (lt1, lt2) (False:t) = lt2 t
 \end{code}
-
 
 %--------------------------------------
 Apresenta-se de seguida o diagrama da função |navLTree|, esta é um catamorfimo cujo gene é |[const Leaf, navAux]|:
@@ -1288,13 +1294,15 @@ Diagrama da função |bnavLTree|:
 
 \begin{code}
 pbnavLTree = cataLTree g
-  where g = undefined
-  {-
   where g = either (\a _ -> D[(Leaf a, 1)]) pbnavAux where
-              pbnavAux (dlt1, dlt2) Empty  = mkD(unD(dlt1) ++ unD(dlt2))
-              pbnavAux (dlt1, dlt2) (Node( D[(True,  x), (False, y)], (dbt1, dbt2)))  = if (x >= y) then (dlt1, dbt1) else (dlt2, dbt2)
-              --     Dist(LTree)    BTree(Dist Bool)         
-              -}
+              pbnavAux (dlt1, dlt2) Empty  = join_dist (Fork) (dlt1 Empty) (dlt2 Empty)
+              pbnavAux (dlt1, dlt2) (Node(d, (dbt1, dbt2)))  = Probability.cond d (dlt1 dbt1) (dlt2 dbt2)
+              --        Dist(LTree)    BTree(Dist Bool)     
+
+-- Monad de fork
+join_dist :: ((a, b) -> c) -> Dist a -> Dist b -> Dist c
+join_dist f (D d) (D d') = D [ (f (x, y),p*q) | (x,p) <- d, (y,q) <- d']
+
 \end{code}
 
 %--------------------------------------
