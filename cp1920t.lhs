@@ -1103,27 +1103,40 @@ Diagrama da função \emph{maisEsq}:
 
 
 \begin{code}
+
+insOrd a x = (p1 . (insOrd' a)) x
+
 insOrd' x = cataBTree g 
-  where g = undefined
+  where g = split insere mantem where
+          insere = either a b where
+            a () = Node (x, (Empty, Empty))
+            b (n, ((fe, ge), (fd, gd))) = if x >= n then Node (n, (ge,fd))
+                                          else Node (n, (fe,gd))
+          mantem = either a b where
+            a () = Empty
+            b (n, ((fe, ge), (fd, gd))) = Node (n, (ge,gd))
 
-insOrd a x = undefined
+isOrd x = (p1 . isOrd') x
 
 isOrd' = cataBTree g
-  where g = undefined
-  -- where g = split (either true false) isOrd'' where
-     --       isOrd'' (a,(Empty,Empty)) = (true,(a,(Empty,Empty)))
+  where g = split checkOrd mantem where
 
-{-
-isOrd' = cataBTree g
-  where g = split (either true false) isOrd'' where
-            --isOrd''= undefined
-            --isOrd'' ((a,(Empty,Empty))) = true
-            --isOrd'' (a,(b,(_,_)))),_)) = if a > b then true else false
-            --isOrd'' (a,(Empty,(Node(b,(_,_)))),_) = if a < b then true else false
-            --isOrd'' (a,((Node(b,(_,_))),(Node(c,(_,_)))),_) = if a > b && a < c then true else false
-            -}
+          checkOrd = either a b where
+            a () = True
+            b (n, ((fe, Node(g1, _)), (fd, Node(ga, _)))) = if fe == True && fd == True && (n >= g1) && (n <= ga) then True 
+                                                                      else False 
+            b (n, ((_, Empty), (fd, Node(ga, _)))) = if fd == True &&  (n <= ga) then True
+                                                      else False
+            b (n, ((fe, Node(g1, _)), ( _, Empty))) = if fe == True && (n >= g1) then True
+                                                      else False
+            b (n, ((_, Empty), (_, Empty))) = True
 
-isOrd = undefined
+          mantem = either a b where
+            a () = Empty
+            b (n, ((fe, ge), (fd, gd))) = Node (n, (ge,gd))
+
+
+
 \end{code} 
 
 
@@ -1134,14 +1147,6 @@ lrot = undefined
 
 splay l t =  undefined
 
-{- 
-splay l t =  flip (cataBTree (either g1 g2)) where
-             g1 a = Empty
-             g2 (a,(left,right)) [] = Node(a,(left [], r []))
-             g2 (a,(left,right)) (h:t) | h==true = l t
-                                       | otherwise = r t
-
--}
   
 \end{code}
 
