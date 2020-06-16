@@ -11,6 +11,19 @@ quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} propEsq
 quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_inv
 quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} propEsq 
 
+--
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord_pres_esq
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord_pres_dir
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord_pres_splay
+
+
+
+
 -- Exercicio 3
 quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_pres_tips
 quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_af
@@ -28,8 +41,18 @@ LTree:
 BTree(Dist Bool):
 (Node(D[(True,0.8), (False, 0.2)], (Empty, Node(D[(True, 0.6),(False, 0.4)],(Empty, Empty)))))
 
+--
+t130 = Node(2,(Empty, Node(10,(Empty,Empty))))
+t127 = Node(2,(Node(10,(Empty,Empty)),Empty))
+t128 = Node(4,(Node(2,(Node(0,(Empty,Empty)),Empty)),Node(6,(Empty,Empty))))
+t129 = Node(4,(Node(2,(Node(0,(Node(10,(Empty,Empty)),Empty)),Empty)),Node(6,(Empty,Empty))))
 
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord_pres_esq
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord_pres_dir
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord_pres_splay
                                                                               
 
-
--- Exercicio 5

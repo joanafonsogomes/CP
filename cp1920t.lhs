@@ -1028,8 +1028,8 @@ cmp  p (s1:s2) = if fst s1 == p then Just (snd s1)
 \end{code}
 
 \begin{code}
-dic_in :: String -> String -> Dict -> Dict
-dic_in a b c = dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a b ))) (discollect(dic_exp(c))  ))))
+dic_in a b c = if ( a=="" && b=="") then c
+               else dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a b ))) (discollect(dic_exp(c))  ))))
  
 \end{code}
 
@@ -1118,11 +1118,12 @@ insOrd' x = cataBTree g
 
 isOrd x = (p1 . isOrd') x
 
-isOrd' = cataBTree g
-  where g = split checkOrd mantem where
 
+isOrd' = cataBTree g 
+  where g = split checkOrd mantem where
           checkOrd = either a b where
             a () = True
+
             b (n, ((fe, Node(g1, _)), (fd, Node(ga, _)))) = if fe == True && fd == True && (n >= g1) && (n <= ga) then True 
                                                                       else False 
             b (n, ((_, Empty), (fd, Node(ga, _)))) = if fd == True &&  (n <= ga) then True
@@ -1135,19 +1136,34 @@ isOrd' = cataBTree g
             a () = Empty
             b (n, ((fe, ge), (fd, gd))) = Node (n, (ge,gd))
 
+\end{code} 
+
+
+\begin{code}
+rrot (Node(r,(Empty,Empty))) = Node(r,(Empty,Empty))
+rrot (Node(r,(Empty,right))) = Node(r,(Empty,right))
+rrot (Node(r,(Node(rr,(left,rgt)),right))) = Node(rr,(left,Node(r,(rgt,right))))
+\end{code} 
+
+\begin{code}
+lrot (Node(r,(Empty,Empty))) = Node(r,(Empty,Empty))
+lrot (Node(r,(left,Empty)))  = Node(r,(left,Empty))
+lrot (Node(r,(left,Node(rr,(right,rgt))))) = Node(rr,(Node(r,(rgt,left)),right))
 
 
 \end{code} 
 
 
 \begin{code}
-rrot = undefined
+splay l t = undefined
+{-
+splay l t =  flip (cataBTree g)
+  where g = either (const Empty) splayAux 
 
-lrot = undefined
-
-splay l t =  undefined
-
-  
+splayAux  [] (Node(a,(left,right))) = Node(a,(([] left), ([] right)))
+--splayAux (True:ts)  (a,(left,right)) = left ts
+--splayAux (False:ts) (a,(left,right))  = right ts
+-}  
 \end{code}
 
 
