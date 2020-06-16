@@ -1028,8 +1028,8 @@ cmp  p (s1:s2) = if fst s1 == p then Just (snd s1)
 \end{code}
 
 \begin{code}
-dic_in :: String -> String -> Dict -> Dict
-dic_in a b c = dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a b ))) (discollect(dic_exp(c))  ))))
+dic_in a b c = if ( a=="" && b=="") then c
+               else dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a b ))) (discollect(dic_exp(c))  ))))
  
 \end{code}
 
@@ -1103,34 +1103,42 @@ Diagrama da função \emph{maisEsq}:
 
 
 \begin{code}
+
+insOrd a x = (p1 . (insOrd' a)) x
+
 insOrd' x = cataBTree g 
-  where g = undefined
+  where g = split insere mantem where
+          insere = either a b where
+            a () = Node (x, (Empty, Empty))
+            b (n, ((fe, ge), (fd, gd))) = if x >= n then Node (n, (ge,fd))
+                                          else Node (n, (fe,gd))
+          mantem = either a b where
+            a () = Empty
+            b (n, ((fe, ge), (fd, gd))) = Node (n, (ge,gd))
 
--- par maybe, btree
-insOrd a x = anaBTree f (Just a, x)
-  where f = undefined
+isOrd x = (p1 . isOrd') x
 
-isOrd' = cataBTree g
-  where g = undefined
-  -- where g = split (either true false) isOrd'' where
-     --       isOrd'' (a,(Empty,Empty)) = (true,(a,(Empty,Empty)))
+isOrd' = cataBTree g 
+  where g = split checkOrd mantem where
 
-{-
-isOrd' = cataBTree g
-  where g = split (either true false) isOrd'' where
-            --isOrd''= undefined
-            --isOrd'' ((a,(Empty,Empty))) = true
-            --isOrd'' (a,(b,(_,_)))),_)) = if a > b then true else false
-            --isOrd'' (a,(Empty,(Node(b,(_,_)))),_) = if a < b then true else false
-            --isOrd'' (a,((Node(b,(_,_))),(Node(c,(_,_)))),_) = if a > b && a < c then true else false
-            -}
+          checkOrd = either a b where
+            a () = True
+            b (n, ((fe, ge), (fd, gd))) = if (fe == True) && (fd == True) then True
+                                        else False
 
-isOrd = undefined
+          mantem = either a b where
+            a () = Empty
+            b (n, ((fe, ge), (fd, gd))) = Node (n, (ge,gd))
+
 \end{code} 
 
 
 \begin{code}
-rrot = undefined
+rrot = cataBTree g where
+    g = either (const Empty) rrAux where
+    rrAux(r,(Empty,Empty)) = Node (r,(Empty,Empty))
+    rrAux (r,(Empty,right)) = Node (r,(Empty,right))
+    rrAux (r,(Node(rr,(left,rightt)),right)) = Node(rr,(left,Node(r,(rightt,right))))
 
 lrot = undefined
 
@@ -1142,6 +1150,7 @@ splay l t =  flip (cataBTree (either g1 g2)) where
              g2 (a,(left,right)) [] = Node(a,(left [], r []))
              g2 (a,(left,right)) (h:t) | h==true = l t
                                        | otherwise = r t
+
 -}
   
 \end{code}
@@ -1279,6 +1288,7 @@ bnavLTree = cataLTree g
               bnavAux (lt1, lt2) Empty = Fork (lt1 Empty , lt2 Empty)
               bnavAux (lt1, lt2) (Node(True,(bt1,bt2)))  = lt1 bt1
               bnavAux (lt1, lt2) (Node(False,(bt1,bt2))) = lt2 bt2
+              --      LTree       BTree(Bool)
 \end{code}
 
 %--------------------------------------
@@ -1305,8 +1315,10 @@ Diagrama da função |bnavLTree|:
 pbnavLTree = cataLTree g
   where g = either (\a _ -> D[(Leaf a, 1)]) pbnavAux where
               pbnavAux (dlt1, dlt2) Empty  = join_dist (Fork) (dlt1 Empty) (dlt2 Empty)
-              pbnavAux (dlt1, dlt2) (Node(d, (dbt1, dbt2)))  = Probability.cond d (dlt1 dbt1) (dlt2 dbt2)  
+              pbnavAux (dlt1, dlt2) (Node(d, (dbt1, dbt2)))  = Probability.cond d (dlt1 dbt1) (dlt2 dbt2)
+              --        Dist(LTree)    BTree(Dist Bool)     
 
+-- Monad de fork
 join_dist :: ((a, b) -> c) -> Dist a -> Dist b -> Dist c
 join_dist f (D d) (D d') = D [ (f (x, y),p*q) | (x,p) <- d, (y,q) <- d']
 
@@ -1333,8 +1345,7 @@ Diagrama da função |pbnavLTree|:
 %--------------------------------------
 
 
-De acordo com o resultado da função implementada anteriormente, existe uma probabilidade de cerca de 83\% de 
-não chover, pelo que a Anita não precisa de levar guarda-chuva com ela.
+Inserir aqui a resposta sobre a gaja levar guarda chuva ou não :)
 
 
 %----------------- Problema 5 ------------------------%
@@ -1363,7 +1374,7 @@ main = do
         else (Control.Monad.join (fmap (display janela white) (pic 10 10)))
 
 pic :: Float -> Float -> IO Picture
-pic y x = fmap pictures (mapM id (coluna(-40*y) x (40*y) []))
+pic y x = fmap pictures (mapM (fmap id) (coluna(-40*y) x (40*y) []))
 
 coluna :: Float -> Float -> Float -> [IO Picture] -> [IO Picture]
 coluna y x a l 
@@ -1383,7 +1394,7 @@ Caso não coloque valores positivos, é criado um mosaico 10x10.
 Para criar o mosaico, é feito um join de um IO(IO()) após um fmap que aplica a função display janela white à função auxiliar pic que cria uma IO Picture a partir do número de linhas e colunas.
 Esta função pic tem como objetivo transformar a lista de IO Picture numa só IO Picture. 
 Para isso, é feito um fmap que aplica a função pictures à lista de IO Picture. 
-Para obter esta última, é necessário fazer um mapM que aplica um id (pois apenas queremos trabalhar sobre as Picture) à lista de IO Picture.
+Para obter esta última, é necessário fazer um mapM que aplica um fmap id (pois apenas queremos trabalhar sobre as Picture) à lista de IO Picture.
 A lista que contém as IO Picture que formam o mosaico, são obtidas recorrendo a recursividade. 
 Dando dois números x e y, estes representam respetivamente o número de mosaicos por linha e o número de mosaicos por coluna.
 Os mosaicos terão como ordenada mínima -40*y e como ordenada máxima 40*y.
