@@ -1140,19 +1140,16 @@ isOrd' = cataBTree g
 
 
 \begin{code}
-rrot (Node(r,(Empty,Empty))) = Node(r,(Empty,Empty))
+rrot Empty = Empty
 rrot (Node(r,(Empty,right))) = Node(r,(Empty,right))
 rrot (Node(r,(Node(rr,(left,rgt)),right))) = Node(rr,(left,Node(r,(rgt,right))))
 \end{code} 
 
 \begin{code}
-lrot (Node(r,(Empty,Empty))) = Node(r,(Empty,Empty))
+lrot Empty = Empty
 lrot (Node(r,(left,Empty)))  = Node(r,(left,Empty))
-lrot (Node(r,(left,Node(rr,(right,rgt))))) = Node(rr,(Node(r,(rgt,left)),right))
-
-
+lrot (Node(r,(left,Node(rr,(rgt,right))))) = Node(rr,(Node(r,(left,rgt)),right))
 \end{code} 
-
 
 \begin{code}
 splay l t = undefined
