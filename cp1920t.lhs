@@ -1134,24 +1134,37 @@ isOrd' = cataBTree g
 
 
 \begin{code}
-rrot = cataBTree g where
-    g = either (const Empty) rrAux where
-    rrAux(r,(Empty,Empty)) = Node (r,(Empty,Empty))
-    rrAux (r,(Empty,right)) = Node (r,(Empty,right))
-    rrAux (r,(Node(rr,(left,rightt)),right)) = Node(rr,(left,Node(r,(rightt,right))))
+rrot (Node(r,(Empty,Empty))) = Node(r,(Empty,Empty))
+rrot (Node(r,(Empty,right))) = Node(r,(Empty,right))
+rrot (Node(r,(Node(rr,(left,rgt)),right))) = Node(rr,(left,Node(r,(rgt,right))))
+\end{code} 
 
-lrot = undefined
+\begin{code}
+lrot (Node(r,(Empty,Empty))) = Node(r,(Empty,Empty))
+lrot (Node(r,(left,Empty)))  = Node(r,(left,Empty))
+lrot (Node(r,(left,Node(rr,(right,rgt))))) = Node(rr,(Node(r,(rgt,left)),right))
 
-splay l t =  undefined
+
+\end{code} 
+
+
+\begin{code}
+splay l t =  flip (cataBTree g)
+  where g = either (const Empty) splayAux 
+
+splayAux  [] (Node(a,(left,right))) = Node(a,(([] left), ([] right)))
+--splayAux (True:ts)  (a,(left,right)) = left ts
+--splayAux (False:ts) (a,(left,right))  = right ts
 
 {- 
 splay l t =  flip (cataBTree (either g1 g2)) where
              g1 a = Empty
              g2 (a,(left,right)) [] = Node(a,(left [], r []))
              g2 (a,(left,right)) (h:t) | h==true = l t
-                                       | otherwise = r t
-
 -}
+  
+\end{code}
+
   
 \end{code}
 
