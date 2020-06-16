@@ -1363,7 +1363,7 @@ main = do
         else (Control.Monad.join (fmap (display janela white) (pic 10 10)))
 
 pic :: Float -> Float -> IO Picture
-pic y x = fmap pictures (mapM (fmap id) (coluna(-40*y) x (40*y) []))
+pic y x = fmap pictures (mapM id (coluna(-40*y) x (40*y) []))
 
 coluna :: Float -> Float -> Float -> [IO Picture] -> [IO Picture]
 coluna y x a l 
