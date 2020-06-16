@@ -1383,7 +1383,7 @@ Caso não coloque valores positivos, é criado um mosaico 10x10.
 Para criar o mosaico, é feito um join de um IO(IO()) após um fmap que aplica a função display janela white à função auxiliar pic que cria uma IO Picture a partir do número de linhas e colunas.
 Esta função pic tem como objetivo transformar a lista de IO Picture numa só IO Picture. 
 Para isso, é feito um fmap que aplica a função pictures à lista de IO Picture. 
-Para obter esta última, é necessário fazer um mapM que aplica um fmap id (pois apenas queremos trabalhar sobre as Picture) à lista de IO Picture.
+Para obter esta última, é necessário fazer um mapM que aplica um id (pois apenas queremos trabalhar sobre as Picture) à lista de IO Picture.
 A lista que contém as IO Picture que formam o mosaico, são obtidas recorrendo a recursividade. 
 Dando dois números x e y, estes representam respetivamente o número de mosaicos por linha e o número de mosaicos por coluna.
 Os mosaicos terão como ordenada mínima -40*y e como ordenada máxima 40*y.
