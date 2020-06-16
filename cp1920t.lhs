@@ -1028,8 +1028,8 @@ cmp  p (s1:s2) = if fst s1 == p then Just (snd s1)
 \end{code}
 
 \begin{code}
-dic_in a b c = if ( a=="" && b=="") then c
-               else dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a b ))) (discollect(dic_exp(c))  ))))
+dic_in :: String -> String -> Dict -> Dict
+dic_in a b c = dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a b ))) (discollect(dic_exp(c))  ))))
  
 \end{code}
 
@@ -1106,7 +1106,9 @@ Diagrama da função \emph{maisEsq}:
 insOrd' x = cataBTree g 
   where g = undefined
 
-insOrd a x = undefined
+-- par maybe, btree
+insOrd a x = anaBTree f (Just a, x)
+  where f = undefined
 
 isOrd' = cataBTree g
   where g = undefined
@@ -1140,7 +1142,6 @@ splay l t =  flip (cataBTree (either g1 g2)) where
              g2 (a,(left,right)) [] = Node(a,(left [], r []))
              g2 (a,(left,right)) (h:t) | h==true = l t
                                        | otherwise = r t
-
 -}
   
 \end{code}
@@ -1278,7 +1279,6 @@ bnavLTree = cataLTree g
               bnavAux (lt1, lt2) Empty = Fork (lt1 Empty , lt2 Empty)
               bnavAux (lt1, lt2) (Node(True,(bt1,bt2)))  = lt1 bt1
               bnavAux (lt1, lt2) (Node(False,(bt1,bt2))) = lt2 bt2
-              --      LTree       BTree(Bool)
 \end{code}
 
 %--------------------------------------
@@ -1305,10 +1305,8 @@ Diagrama da função |bnavLTree|:
 pbnavLTree = cataLTree g
   where g = either (\a _ -> D[(Leaf a, 1)]) pbnavAux where
               pbnavAux (dlt1, dlt2) Empty  = join_dist (Fork) (dlt1 Empty) (dlt2 Empty)
-              pbnavAux (dlt1, dlt2) (Node(d, (dbt1, dbt2)))  = Probability.cond d (dlt1 dbt1) (dlt2 dbt2)
-              --        Dist(LTree)    BTree(Dist Bool)     
+              pbnavAux (dlt1, dlt2) (Node(d, (dbt1, dbt2)))  = Probability.cond d (dlt1 dbt1) (dlt2 dbt2)  
 
--- Monad de fork
 join_dist :: ((a, b) -> c) -> Dist a -> Dist b -> Dist c
 join_dist f (D d) (D d') = D [ (f (x, y),p*q) | (x,p) <- d, (y,q) <- d']
 
@@ -1335,7 +1333,8 @@ Diagrama da função |pbnavLTree|:
 %--------------------------------------
 
 
-Inserir aqui a resposta sobre a gaja levar guarda chuva ou não :)
+De acordo com o resultado da função implementada anteriormente, existe uma probabilidade de cerca de 83\% de 
+não chover, pelo que a Anita não precisa de levar guarda-chuva com ela.
 
 
 %----------------- Problema 5 ------------------------%

@@ -11,6 +11,19 @@ quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} propEsq
 quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_inv
 quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} propEsq 
 
+--
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord_pres_esq
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord_pres_dir
+
+quickCheckWith stdArgs { maxSuccess= 200, maxSize= 20} prop_ord_pres_splay
+
+
+
+
 -- Exercicio 3
 quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_pres_tips
 quickCheckWith stdArgs { maxSuccess= 200, maxSize= 40} prop_af
