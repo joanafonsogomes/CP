@@ -16,6 +16,7 @@
 %include polycode.fmt 
 %format (div (x)(y)) = x "\div " y
 %format succ = "\succ "
+%format myList = "^*"
 %format ==> = "\Longrightarrow "
 %format map = "\map "
 %format length = "\length "
@@ -820,7 +821,6 @@ Os diagramas podem ser produzidos recorrendo à \emph{package} \LaTeX\
 \subsection*{Problema 1}
 Função de representação de um dicionário:
 \begin{code}
-
 dic_imp :: [(String,[String])] -> Dict
 dic_imp = Term "" . map (bmap  id singl) . untar . discollect
 \end{code}
@@ -990,16 +990,16 @@ Definimos a função \emph{tar} como um catamorfismo como se pode observar no se
 %--------------------------------------
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |Exp V O*|
+    |Exp V O myList|
            \ar[d]_-{|cataExp g|}
 &
-    |V+O* >< (Exp V O*)*|
+    |V+O  myList >< (Exp V O  myList) myList|
            \ar[d]^{|recExp (cataExp g)|}
            \ar[l]_-{|inExp|}
 \\
-     |((O*,V))*|
+     |((O  myList,V))  myList|
 &
-     |V+O* >< ((O*,V))*|
+     |V+O  myList >< ((O  myList,V))  myList|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1027,6 +1027,7 @@ cmp  p (s1:s2) = if fst s1 == p then Just (snd s1)
                            else cmp p s2
 \end{code}
 
+A função |dic_in| tem como objetivo inserir novos pares (palavra, tradução) no dicionário.
 \begin{code}
 dic_in a b c = if ( a=="" && b=="") then c
                else dic_imp (dic_norm (collect((++) (singl(split p1 p2(curry(id><id)a b ))) (discollect(dic_exp(c))  ))))
@@ -1034,29 +1035,10 @@ dic_in a b c = if ( a=="" && b=="") then c
 \end{code}
 
 
-%-------------------------------------p
-\xymatrix@@C=3cm{
-    |String|
-           \ar[d]_-{|anaList h|}
-            \ar[r]^-{|h|}
-&
-    |1+A >< String|
-           \ar[d]^{|recList(anaList h)|}
-\\
-     |String*|
-        \ar[d]_-{|cataList g|}
-        \ar[r]^-{|out|}
-&
-     |1+A >< String*|
-           \ar[l]^-{|in|}
-            \ar[d]^{|recList(cataList g)|}
-\\
-    |(String,String*)*|
-&
-    |1+A+(String,String*)*|
-        \ar[l]^-{|g|}
-}
-%--------------------------------------
+
+
+
+
 
 
 
@@ -1071,6 +1053,7 @@ maisDir = cataBTree g
             dirAux (a,(Nothing,Just t2)) = Just t2
             dirAux (a,(Just t1,Nothing)) = Just a
             dirAux (a,(Just t1, Just t2)) = Just t2
+
   
 maisEsq = cataBTree g
   where g =  either (const Nothing) esqAux where
@@ -1081,15 +1064,15 @@ maisEsq = cataBTree g
 \end{code}
 
 %--------------------------------------
-Diagrama da função \emph{maisEsq}:
+Apresenta-se de seguida o diagrama \emph{maisEsq}, o diagrama da função \emph{maisDir} é análogo a este.
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
     |BTree A|
-           \ar[d]_-{|cataBdt g|}
+           \ar[d]_-{|cataBTree g|}
 &
     |1 + A >< (BTree A >< BTree A)|
-           \ar[d]^{|recBdt (cataBdt g)|}
-           \ar[l]_-{|inBdt|}
+           \ar[d]^{|recBTree(cataBTree g)|}
+           \ar[l]_-{|inBTree|}
 \\
      |Maybe A|
 &
@@ -1113,6 +1096,68 @@ insOrd' x = cataBTree g
             a () = Empty
             b (n, ((fe, ge), (fd, gd))) = Node (n, (ge,gd))
 
+\end{code}
+
+%--------------------------------------
+Diagrama da função |insOrd'|: 
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |BTree A|
+           \ar[d]_-{|cataBTree g|}
+&
+    |1 + A >< (BTree A >< BTree A)|
+           \ar[d]^{|recBTree(cataBTree g)|}
+           \ar[l]_-{|inBTree|}
+\\
+     |(BTree A,BTree A)|
+&
+     |1 + A >< ((BTree A,BTree A) >< (BTree A,BTree A))|
+           \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+%--------------------------------------
+Diagrama da função |insere|: 
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |BTree A|
+           \ar[d]_-{|cataBTree insere|}
+&
+    |1 + A >< (BTree A >< BTree A)|
+           \ar[d]^{|recBTree(cataBTree insere)|}
+           \ar[l]_-{|inBTree|}
+\\
+     |BTree A|
+&
+     |1 + A >< (BTree A >< BTree A)|
+           \ar[l]^-{|insere|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+
+%--------------------------------------
+Diagrama da função |mantem|: 
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |BTree A|
+           \ar[d]_-{|cataBTree mantem|}
+&
+    |1 + A >< (BTree A >< BTree A)|
+           \ar[d]^{|recBTree(cataBTree mantem)|}
+           \ar[l]_-{|inBTree|}
+\\
+     |BTree A|
+&
+     |1 + A >< (BTree A >< BTree A)|
+           \ar[l]^-{|mantem|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+
+\begin{code}
 isOrd x = (p1 . isOrd') x
 
 isOrd' = cataBTree g 
@@ -1129,6 +1174,48 @@ isOrd' = cataBTree g
 
 \end{code}
 
+%--------------------------------------
+Diagrama da função |isOrd'|: 
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |BTree A|
+           \ar[d]_-{|cataBTree g|}
+&
+    |1 + A >< (BTree A >< BTree A)|
+           \ar[d]^{|recBTree(cataBTree g)|}
+           \ar[l]_-{|inBTree|}
+\\
+     |(Bool,BTree A)|
+&
+     |1 + A >< ((Bool,BTree A) >< (Bool,BTree A))|
+           \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+%--------------------------------------
+Diagrama da função |checkOrd|: 
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |BTree A|
+           \ar[d]_-{|cataBTree checkOrd|}
+&
+    |1 + A >< (BTree A >< BTree A)|
+           \ar[d]^{|recBTree(cataBTree checkOrd)|}
+           \ar[l]_-{|inBTree|}
+\\
+     |Bool|
+&
+     |1 + A >< (Bool >< Bool)|
+           \ar[l]^-{|checkOrd|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
+O diagrama da função |mantem| é identico ao diagrama apresentado anteriormente.
+
+
+
 
 \begin{code}
 rrot Empty = Empty
@@ -1144,18 +1231,38 @@ lrot (Node(r,(left,Node(rr,(rgt,right))))) = Node(rr,(Node(r,(left,rgt)),right))
 
 \begin{code}
 splay = flip (cataBTree g) 
-            where g = either splayAux' splayAux
-                  splayAux' () = const Empty 
+            where g = either sp splayAux
+                  sp () = const Empty 
                   splayAux (a,(left,right)) []  = Node(a,(left [], right []))
                   splayAux (a,(left,right)) (True:ts) =  rrot(Node(a,(left ts,right []))) 
                   splayAux (a,(left,right)) (False:ts)  =  lrot(Node(a,(left [],right ts)))
 \end{code}
 
+%--------------------------------------
+Diagrama da função |splay|: 
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |BTree A|
+           \ar[d]_-{|cataBTree g|}
+&
+    |1 + A >< (BTree A >< BTree A)|
+           \ar[d]^{|recBTree(cataBTree g)|}
+           \ar[l]_-{|inBTree|}
+\\
+     |Bool myList >< BTree A|
+&
+     |1 + A >< ((Bool myList >< BTree A) >< (Bool myList >< BTree A))|
+           \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+%--------------------------------------
+
   
 
 %----------------- Problema 3 ------------------------%
 \subsection*{Problema 3}
-O objetivo da função |extLTree| é transformar uma |Bdtree| numa |Ltree| utilizando um catamorfismo, de tal modo que |extLTree| = |cataBdt g|. 
+O objetivo da função |extLTree| é transformar uma |Bdtree| numa |LTree| utilizando um catamorfismo, de tal modo que |extLTree| = |cataBdt g|. 
 
 \begin{code}
 extLTree :: Bdt a -> LTree a
@@ -1167,16 +1274,16 @@ extLTree = cataBdt g where
 Diagrama da função |extLTree|:
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |Bdt|
+    |Bdt A|
            \ar[d]_-{|cataBdt g|}
 &
-    |A+(B><Bdt><Bdt)|
+    |A+(B><(Bdt A >< Bdt A))|
            \ar[d]^{|recBdt (cataBdt g)|}
            \ar[l]_-{|inBdt|}
 \\
-     |LTree|
+     |LTree A|
 &
-     |Bdt3|
+     |A+(B >< (LTree A >< LTree A))|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1195,7 +1302,7 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
 \xymatrix@@C=2cm{
      |Bdt A|
 &
-     |A+(B><(Bdt><Bdt))|
+     |A+(B><(Bdt A >< Bdt A))|
            \ar[l]^-{|inBdt|}
 }
 \end{eqnarray*}
@@ -1205,7 +1312,7 @@ outBdt (Query (a,(t1,t2))) = Right (a,(t1,t2))
      |Bdt A|
            \ar[r]_-{|outBdt|}
 &
-     |A+(B><(Bdt><Bdt))|
+     |A+(B><(Bdt A ><Bdt A))|
 }\end{eqnarray*}
 %--------------------------------------
 
@@ -1222,12 +1329,12 @@ anaBdt f = inBdt . (recBdt (anaBdt f)) . f
 Diagrama de |anaBdt|:
 
 \xymatrix@@C=3cm{
-    |Bdt|
+    |Bdt A|
              \ar[r]^-{|outBdt|}
 &
-    |A+(B>< (Bdt><Bdt))|
+    |A+(B >< (Bdt A >< Bdt A))|
 \\
-     |LTree|
+     |LTree A|
             \ar[u]^-{|anaBdt f|}
             \ar[r]_-{|f|}
 &
@@ -1252,16 +1359,16 @@ Apresenta-se de seguida o diagrama da função |navLTree|, esta é um catamorfim
 
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |LTree|
+    |LTree A|
            \ar[d]_-{|cataLTree g|}
 &
-    |A+ (LTree×LTree)|
-           \ar[d]^{|recLtree(cataLTree g)|}
+    |A+ (LTree A >< LTree A)|
+           \ar[d]^{|recLTree(cataLTree g)|}
            \ar[l]_-{|inLTree|}
 \\
-     |Bool* >< LTree|
+     |Bool* >< LTree A|
 &
-     |A + ((Bool* >< LTree)><(Bool* >< Tree))|
+     |A + ((Bool* >< LTree A)><(Bool* >< LTree A))|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1292,16 +1399,16 @@ Diagrama da função |bnavLTree|:
 
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |LTree|
+    |LTree A|
            \ar[d]_-{|cataLtree g|}
 &
-    |A + (LTree >< LTree)|
-           \ar[d]^{|recLtree (cataLtree g)|}
+    |A + (LTree A >< LTree A)|
+           \ar[d]^{|recLtree (cataLTree g)|}
            \ar[l]_-{|inLtree|}
 \\
-     |(BTree Bool) >< LTree|
+     |(BTree Bool) >< LTree A|
 &
-     |A+((BTree Bool) >< LTree)><((BTree Bool) >< LTree)|
+     |A+(((BTree Bool) >< LTree A)><((BTree Bool) >< LTree A))|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1321,21 +1428,23 @@ join_dist f (D d) (D d') = D [ (f (x, y),p*q) | (x,p) <- d, (y,q) <- d']
 %--------------------------------------
 Diagrama da função |pbnavLTree|:
 
+\small{
 \begin{eqnarray*}
 \xymatrix@@C=0.3cm@@R=1cm{
-    |LTree|
+    |LTree A|
            \ar[d]_-{|cataLtree g|}
 &
     |A + (LTree A >< LTree A)|
            \ar[d]^{|recLtree (cataLtree g)|}
            \ar[l]_-{|inLtree|}
 \\
-     |BTree(DistBool) >< Dist(LTree)|
+     |BTree(Dist Bool) >< Dist(LTree A)|
 &
-     |A+((BTree(DistBool) >< Dist(LTree)) >< (BTree(DistBool) >< Dist(LTree)))|
+     |A+((BTree(Dist Bool) >< Dist(LTree A)) >< (BTree(Dist Bool) >< Dist(LTree A)))|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
+}
 %--------------------------------------
 
 Segundo o código apresentado anteiormente, a probabilidade de chover é 83\%, pelo que a Anita não deve levar guarda-chuva.
@@ -1355,6 +1464,10 @@ janela = InWindow
              (800, 800)       -- window size
              (100,100)        -- window position
 
+put  = uncurry Translate 
+\end{code}
+
+\begin{code}
 main = do
        putStrLn "Mosaicos por coluna: "
        inputY <- getLine
@@ -1403,36 +1516,18 @@ Com este \ensuremath{\Varid{truchet}}, abcissa x e ordenada y é criado um mosai
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=9.5cm]{images/m2.png}
-\caption{Mosaico de Truchet gerado a partir do código anterior.} \label{fig1}
+\includegraphics[width=9.5cm]{images/m1.png}
+\caption{Exemplo de mosaico de Truchet 10x10 gerado a partir do código anterior.} \label{fig1}
 \end{center}
 \end{figure}
 
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=9.5cm]{images/m2.png}
-\caption{Mosaico de Truchet gerado a partir do código anterior.} \label{fig1}
+\caption{Exemplo de mosaico de Truchet 10x10 gerado a partir do código anterior.} \label{fig1}
 \end{center}
 \end{figure}
 
-
-
-
-
-
-
-\begin{code}
------ defs auxiliares -------------
-put  = uncurry Translate 
--------------------------------------------------
-\end{code}
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=7.5cm]{images/m2.png}
-\caption{Mosaico de Truchet gerado a partir do código anterior.} \label{fig1}
-\end{center}
-\end{figure} 
 
 %----------------- Fim do anexo com soluções dos alunos ------------------------%
 
