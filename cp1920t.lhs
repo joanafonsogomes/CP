@@ -1061,8 +1061,6 @@ dic_in a b c = if ( a=="" && b=="") then c
 
 
 
-
-%----------------- Problema 2 ------------------------%
 \subsection*{Problema 2}
 
 \begin{code}
@@ -1103,7 +1101,6 @@ Diagrama da função \emph{maisEsq}:
 
 
 \begin{code}
-
 insOrd a x = (p1 . (insOrd' a)) x
 
 insOrd' x = cataBTree g 
@@ -1118,25 +1115,19 @@ insOrd' x = cataBTree g
 
 isOrd x = (p1 . isOrd') x
 
-
 isOrd' = cataBTree g 
   where g = split checkOrd mantem where
+
           checkOrd = either a b where
             a () = True
-
-            b (n, ((fe, Node(g1, _)), (fd, Node(ga, _)))) = if fe == True && fd == True && (n >= g1) && (n <= ga) then True 
-                                                                      else False 
-            b (n, ((_, Empty), (fd, Node(ga, _)))) = if fd == True &&  (n <= ga) then True
-                                                      else False
-            b (n, ((fe, Node(g1, _)), ( _, Empty))) = if fe == True && (n >= g1) then True
-                                                      else False
-            b (n, ((_, Empty), (_, Empty))) = True
+            b (n, ((fe, ge), (fd, gd))) = if (fe == True) && (fd == True) then True
+                                        else False
 
           mantem = either a b where
             a () = Empty
             b (n, ((fe, ge), (fd, gd))) = Node (n, (ge,gd))
 
-\end{code} 
+\end{code}
 
 
 \begin{code}
@@ -1152,17 +1143,15 @@ lrot (Node(r,(left,Node(rr,(rgt,right))))) = Node(rr,(Node(r,(left,rgt)),right))
 \end{code} 
 
 \begin{code}
-splay l t = undefined
-{-
-splay l t =  flip (cataBTree g)
-  where g = either (const Empty) splayAux 
-
-splayAux  [] (Node(a,(left,right))) = Node(a,(([] left), ([] right)))
---splayAux (True:ts)  (a,(left,right)) = left ts
---splayAux (False:ts) (a,(left,right))  = right ts
--}  
+splay = flip (cataBTree g) 
+            where g = either splayAux' splayAux
+                  splayAux' () = const Empty 
+                  splayAux (a,(left,right)) []  = Node(a,(left [], right []))
+                  splayAux (a,(left,right)) (True:ts) =  rrot(Node(a,(left ts,right []))) 
+                  splayAux (a,(left,right)) (False:ts)  =  lrot(Node(a,(left [],right ts)))
 \end{code}
 
+  
 
 %----------------- Problema 3 ------------------------%
 \subsection*{Problema 3}
@@ -1296,7 +1285,6 @@ bnavLTree = cataLTree g
               bnavAux (lt1, lt2) Empty = Fork (lt1 Empty , lt2 Empty)
               bnavAux (lt1, lt2) (Node(True,(bt1,bt2)))  = lt1 bt1
               bnavAux (lt1, lt2) (Node(False,(bt1,bt2))) = lt2 bt2
-              --      LTree       BTree(Bool)
 \end{code}
 
 %--------------------------------------
@@ -1324,9 +1312,7 @@ pbnavLTree = cataLTree g
   where g = either (\a _ -> D[(Leaf a, 1)]) pbnavAux where
               pbnavAux (dlt1, dlt2) Empty  = join_dist (Fork) (dlt1 Empty) (dlt2 Empty)
               pbnavAux (dlt1, dlt2) (Node(d, (dbt1, dbt2)))  = Probability.cond d (dlt1 dbt1) (dlt2 dbt2)
-              --        Dist(LTree)    BTree(Dist Bool)     
 
--- Monad de fork
 join_dist :: ((a, b) -> c) -> Dist a -> Dist b -> Dist c
 join_dist f (D d) (D d') = D [ (f (x, y),p*q) | (x,p) <- d, (y,q) <- d']
 
@@ -1352,8 +1338,7 @@ Diagrama da função |pbnavLTree|:
 \end{eqnarray*}
 %--------------------------------------
 
-
-Inserir aqui a resposta sobre a gaja levar guarda chuva ou não :)
+Segundo o código apresentado anteiormente, a probabilidade de chover é 83%, pelo que a Anita não deve levar guarda-chuva.
 
 
 %----------------- Problema 5 ------------------------%
@@ -1396,26 +1381,39 @@ linha y x a l
 
 \end{code}
 
-Explicação da resolução do exercício 5:
-Começámos por criar uma main onde pedimos ao utilizador para introduzir o número de mosaicos por linhas e mosaicos por colunas.
-Caso não coloque valores positivos, é criado um mosaico 10x10. 
-Para criar o mosaico, é feito um join de um IO(IO()) após um fmap que aplica a função display janela white à função auxiliar pic que cria uma IO Picture a partir do número de linhas e colunas.
-Esta função pic tem como objetivo transformar a lista de IO Picture numa só IO Picture. 
-Para isso, é feito um fmap que aplica a função pictures à lista de IO Picture. 
-Para obter esta última, é necessário fazer um mapM que aplica um fmap id (pois apenas queremos trabalhar sobre as Picture) à lista de IO Picture.
-A lista que contém as IO Picture que formam o mosaico, são obtidas recorrendo a recursividade. 
-Dando dois números x e y, estes representam respetivamente o número de mosaicos por linha e o número de mosaicos por coluna.
-Os mosaicos terão como ordenada mínima -40*y e como ordenada máxima 40*y.
-Isto porque, se a janela dada fica completa com 10x10 mosaicos, então a abcissa e ordenada mínimas do referencial é -400 
-e absissa máxima e ordenada máxima do referencial é +400. Assim, a ordenada mínima que os mosaicos podem obter será (-y*400)/10 e a ordenada máxima será (y*400)/10.
-Começando na ordenada mais baixa, a função coluna vai concatenando as linhas correspondentes à coluna. 
+\paragraph{}
+\textbf{Explicação da resolução do problema 5:}  \\
+\par Começámos por criar uma \ensuremath{\Varid{main}} onde pedimos ao utilizador para introduzir o número de mosaicos por linhas e mosaicos por colunas. Caso não coloque valores positivos, é criado um mosaico 10x10.
+\par Para criar o mosaico, é feito um join de um IO(IO()) após um \ensuremath{\Varid{fmap}} que aplica a função display janela white à função auxiliar pic que cria uma IO Picture a partir do número de linhas e colunas.
+\par Esta função pic tem como objetivo transformar a lista de IO Picture numa só IO Picture.
+Para isso, é feito um \ensuremath{\Varid{fmap}} que aplica a função pictures à lista de IO Picture.
+Para obter esta última, é necessário fazer um \ensuremath{\Varid{mapM}} que aplica um id (pois apenas queremos trabalhar sobre as Picture) à lista de IO Picture.
+\par A lista que contém as IO Picture que formam o mosaico, são obtidas recorrendo a recursividade. 
+\par Dando dois números x e y, estes representam respetivamente o número de mosaicos por linha e o número de mosaicos por coluna.
+\par Os mosaicos terão como ordenada mínima -40*y e como ordenada máxima 40*y.
+Isto porque, se a janela dada fica completa com 10x10 mosaicos, então a abcissa e ordenada mínimas do referencial é -400 e absissa máxima e ordenada máxima do referencial é +400. Assim, a ordenada mínima que os mosaicos podem obter será (-y*400)/10 e a ordenada máxima será (y*400)/10.
+\par Começando na ordenada inferior, a função coluna vai concatenando as linhas correspondentes à coluna. 
 A ordenada da seguinte coluna de mosaicos será y+80 e esta coluna será concatenada com a anterior.
-A recursividade pára quando se atinge a ordenada máxima. 
-Para criar as linhas do mosaico, procede-se da mesma forma como para a criação das colunas. 
+A recursividade pára quando se atinge a ordenada máxima.
+\par Para criar as linhas do mosaico, procede-se da mesma forma como para a criação das colunas. 
 A abcissa mínima será -40*x e a abcissa máxima será 40*x.
-O procedimento da função linha é o mesmo explicado anteriormente no entanto, é nesta função que são criadas as Picture e inseridas na lista. 
-Para isso, é feita a permuta dos dois truchet fornecidos. É feito um fmap à lista resultante aplicando a função head, obtendo-se assim um truchet aleatório. 
-Com este truchet, abcissa x e ordenada y é criado um mosaico após um fmap aplicado à função put(y,x). 
+\par O procedimento da função linha é o mesmo explicado anteriormente no entanto, é nesta função que são criadas as Picture e inseridas na lista.
+Para isso, é feita a permuta dos dois \textit{truchet} fornecidos. É feito um \ensuremath{\Varid{fmap}} à lista resultante aplicando a função \ensuremath{\Varid{head}}, obtendo-se assim um \textit{truchet} aleatório.
+Com este \ensuremath{\Varid{truchet}}, abcissa x e ordenada y é criado um mosaico após um  aplicado à função \ensuremath{\Varid{put(y,x)}}. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9.5cm]{images/m2.png}
+\caption{Mosaico de Truchet gerado a partir do código anterior.} \label{fig1}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9.5cm]{images/m2.png}
+\caption{Mosaico de Truchet gerado a partir do código anterior.} \label{fig1}
+\end{center}
+\end{figure}
 
 
 
