@@ -1167,14 +1167,14 @@ extLTree = cataBdt g where
 Diagrama da função |extLTree|:
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |Bdt A|
+    |Bdt|
            \ar[d]_-{|cataBdt g|}
 &
     |A+(B><Bdt><Bdt)|
            \ar[d]^{|recBdt (cataBdt g)|}
            \ar[l]_-{|inBdt|}
 \\
-     |LTree A|
+     |LTree|
 &
      |Bdt3|
            \ar[l]^-{|g|}
@@ -1222,12 +1222,12 @@ anaBdt f = inBdt . (recBdt (anaBdt f)) . f
 Diagrama de |anaBdt|:
 
 \xymatrix@@C=3cm{
-    |Bdt A|
+    |Bdt|
              \ar[r]^-{|outBdt|}
 &
     |A+(B>< (Bdt><Bdt))|
 \\
-     |LTreeA|
+     |LTree|
             \ar[u]^-{|anaBdt f|}
             \ar[r]_-{|f|}
 &
@@ -1252,16 +1252,16 @@ Apresenta-se de seguida o diagrama da função |navLTree|, esta é um catamorfim
 
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |LTree A|
+    |LTree|
            \ar[d]_-{|cataLTree g|}
 &
-    |A+(A><LTree A><LTree A)|
+    |A+ (LTree×LTree)|
            \ar[d]^{|recLtree(cataLTree g)|}
            \ar[l]_-{|inLTree|}
 \\
-     |Bool* >< LTree A|
+     |Bool* >< LTree|
 &
-     |A + ((Bool* >< LTreeA)><(Bool* >< TreeA))|
+     |A + ((Bool* >< LTree)><(Bool* >< Tree))|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1292,14 +1292,14 @@ Diagrama da função |bnavLTree|:
 
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
-    |LTree A|
+    |LTree|
            \ar[d]_-{|cataLtree g|}
 &
-    |A + LTree A >< LTree A|
+    |A + (LTree >< LTree)|
            \ar[d]^{|recLtree (cataLtree g)|}
            \ar[l]_-{|inLtree|}
 \\
-     |(BTree Bool) >< LTree A|
+     |(BTree Bool) >< LTree|
 &
      |A+((BTree Bool) >< LTree)><((BTree Bool) >< LTree)|
            \ar[l]^-{|g|}
@@ -1323,22 +1323,22 @@ Diagrama da função |pbnavLTree|:
 
 \begin{eqnarray*}
 \xymatrix@@C=0.3cm@@R=1cm{
-    |LTree A|
+    |LTree|
            \ar[d]_-{|cataLtree g|}
 &
-    |A + LTree A >< LTree A|
+    |A + (LTree A >< LTree A)|
            \ar[d]^{|recLtree (cataLtree g)|}
            \ar[l]_-{|inLtree|}
 \\
-     |(BTree (Dist Bool)) >< Dist(LTree A)|
+     |BTree(DistBool) >< Dist(LTree)|
 &
-     |A+((BTree (Dist Bool)) >< Dist(LTree A)) ><((BTree (Dist Bool)) >< Dist(LTree A))|
+     |A+((BTree(DistBool) >< Dist(LTree)) >< (BTree(DistBool) >< Dist(LTree)))|
            \ar[l]^-{|g|}
 }
 \end{eqnarray*}
 %--------------------------------------
 
-Segundo o código apresentado anteiormente, a probabilidade de chover é 83%, pelo que a Anita não deve levar guarda-chuva.
+Segundo o código apresentado anteiormente, a probabilidade de chover é 83\%, pelo que a Anita não deve levar guarda-chuva.
 
 
 %----------------- Problema 5 ------------------------%
