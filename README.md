@@ -1,3 +1,4 @@
-# CP1920
+# CP
+Projeto de **Cálculo de Programas** 2019/20
 
-made by [Maria](https://github.com/mariajbp) & [Mimi](https://github.com/mimr21) & [Joana](https://github.com/joanafonsogomes) & [Alexandra](https://github.com/Alexandra2899)
+###### By [@joanafonsogomes](https://github.com/joanafonsogomes) [@mariajbp](https://github.com/mariajbp) [@mimr21](https://github.com/mimr21) [@Alexandra2899]( https://github.com/Alexandra2899)
